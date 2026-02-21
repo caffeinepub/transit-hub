@@ -1,72 +1,104 @@
 {
   "kind": "build_request",
-  "title": "Display Red Bus routes and fares in application",
-  "priority": "high",
+  "title": "Integrate Real City Names and Rates from RedBus and Other Booking Sites",
+  "projectName": "Transit Hub",
+  "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Ensure Red Bus routes with transport type 'bus' are stored in the backend with complete fare breakdown including base fare, taxes, and service fees",
+      "text": "Replace placeholder city names with real city data from RedBus or similar booking platforms (e.g., MakeMyTrip, Goibibo) for all transport types (bus, train, taxi)",
       "target": "backend",
       "source": {
         "messageIds": [
-          "msg-last"
+          "msg-latest"
         ],
         "quotes": [
-          "red bus route and its fare are not reflected in project"
+          "take city name and rates from red bus or other bookings site"
         ]
       },
       "acceptanceCriteria": [
-        "Backend returns Red Bus routes when querying all routes",
-        "Red Bus route data includes operator name, origin, destination, schedule, and complete rate breakdown",
-        "Rate breakdown contains base fare, tax amount, service fee, and total fare calculations"
+        "Backend stores actual city names from booking platforms instead of generic placeholders",
+        "City names are accurate and match real-world locations served by transport operators"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Display Red Bus routes in the search results page with correct fare information showing the complete pricing breakdown",
-      "target": "frontend",
+      "text": "Update bus route pricing structure to reflect real RedBus fare data including base fare, taxes, and service fees",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-last"
+          "msg-latest"
         ],
         "quotes": [
-          "red bus route and its fare are not reflected in project"
+          "take city name and rates from red bus"
         ]
       },
       "acceptanceCriteria": [
-        "Red Bus routes appear in search results when filtering by bus transport type",
-        "Route cards display the total fare calculated from base fare + taxes + service fees",
-        "Fare breakdown is visible in route details showing itemized costs"
+        "Bus route prices match actual RedBus pricing for equivalent routes",
+        "Fare breakdown includes realistic base fare, taxes, and service fee components",
+        "Total fare calculation matches booking platform standards"
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Verify Red Bus routes are correctly rendered in the AdminRoutesTable with full rate breakdown details visible",
-      "target": "frontend",
+      "text": "Update train route pricing to use real-world fare data from booking platforms like IRCTC, MakeMyTrip, or similar services",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-last"
+          "msg-latest"
         ],
         "quotes": [
-          "red bus route and its fare are not reflected in project"
+          "apply its in project fro bus train and taxi"
         ]
       },
       "acceptanceCriteria": [
-        "Red Bus entries appear in the admin routes table",
-        "Rate breakdown columns show base fare, taxes, service fees, and total for Red Bus routes",
-        "Edit and delete actions work correctly for Red Bus routes"
+        "Train fares reflect actual pricing for comparable routes and classes",
+        "Pricing structure includes realistic fare components (base fare, reservation charges, GST)"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Update taxi pricing model to reflect real-world rates from booking platforms like Ola, Uber, or local taxi services based on distance and vehicle type",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "apply its in project fro bus train and taxi"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Taxi base fares and per-km rates match actual market rates for sedan, SUV, and van categories",
+        "Pricing reflects realistic distance-based calculations used by ride-booking platforms"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Ensure all frontend displays (route cards, detail pages, booking summaries, admin tables) correctly show the updated real city names and pricing for all transport types",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ]
+      },
+      "acceptanceCriteria": [
+        "RouteResultCard displays real city names and accurate fare breakdown",
+        "RouteDetailPage shows realistic pricing information",
+        "AdminRoutesTable correctly renders real city data and rates",
+        "Booking flow displays accurate pricing throughout the checkout process"
       ]
     }
   ],
   "constraints": [
-    "Use existing Route data structure with rate breakdown fields (baseFare, taxes, serviceFee)",
-    "Maintain compatibility with current search and filtering logic",
-    "Preserve existing transport type handling for train, bus, and taxi"
+    "Maintain existing fare breakdown structure (baseFare, tax, serviceFee)",
+    "Preserve current admin route management functionality",
+    "Keep existing booking and payment flows intact"
   ],
   "nonGoals": [
-    "Adding new transport types beyond existing bus, train, taxi",
-    "Modifying the rate calculation formula or pricing structure",
-    "Changes to booking flow or payment integration"
+    "Live API integration with RedBus or other booking platforms",
+    "Automated price updates or synchronization with external services",
+    "Currency conversion or international pricing"
   ],
   "imageRequirements": {
     "required": [],

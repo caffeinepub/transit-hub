@@ -1,52 +1,47 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Display Red Bus routes and fares in application",
+  "title": "Integrate Real City Names and Rates from RedBus and Other Booking Sites",
   "requirements": [
     {
-      "id": "REQ-2",
-      "summary": "Display Red Bus routes in the search results page with correct fare information showing the complete pricing breakdown",
+      "id": "REQ-5",
+      "summary": "Update all frontend displays to correctly show real city names and accurate pricing data for bus, train, and taxi routes",
       "acceptanceCriteria": [
-        "Red Bus routes appear in search results when filtering by bus transport type",
-        "Route cards display the total fare calculated from base fare + taxes + service fees",
-        "Fare breakdown is visible in route details showing itemized costs"
+        "RouteResultCard displays real city names and accurate fare breakdown",
+        "RouteDetailPage shows realistic pricing information",
+        "AdminRoutesTable correctly renders real city data and rates",
+        "Booking flow displays accurate pricing throughout the checkout process"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/ResultsPage.tsx",
-          "operation": "modify",
-          "description": "Ensure Red Bus routes are included in search results by verifying the getAllRoutes query properly fetches all routes including Red Bus. The existing transport type filter should already handle bus routes, but verify Red Bus routes with transport type 'bus' are displayed correctly in the results grid."
-        },
-        {
           "path": "frontend/src/components/RouteResultCard.tsx",
           "operation": "modify",
-          "description": "Verify the route card displays the correct total fare for Red Bus routes. The price should be calculated from route.priceCents which must reflect the sum of baseFare + taxes + serviceFees from the rateBreakdown. Add a visual indicator or tooltip showing the fare breakdown (base fare, taxes, service fees) when users hover over or click the price."
+          "description": "Verify that the component correctly displays origin and destination city names from the route data returned by the backend. Ensure the fare breakdown tooltip shows baseFare, taxes, and serviceFees accurately from route.rateBreakdown. Update any hardcoded placeholder city names or pricing display logic if present. The component should render real city data and itemized pricing without modification if backend data is already structured correctly."
         },
         {
           "path": "frontend/src/pages/RouteDetailPage.tsx",
           "operation": "modify",
-          "description": "Add a detailed fare breakdown section in the route details view that displays the itemized costs from route.rateBreakdown. Show baseFare, taxes, serviceFees as separate line items with labels, followed by the total. Format all amounts consistently (converting from cents to currency display). Ensure this breakdown is visible for all routes including Red Bus."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Verify Red Bus routes are correctly rendered in the AdminRoutesTable with full rate breakdown details visible",
-      "acceptanceCriteria": [
-        "Red Bus entries appear in the admin routes table",
-        "Rate breakdown columns show base fare, taxes, service fees, and total for Red Bus routes",
-        "Edit and delete actions work correctly for Red Bus routes"
-      ],
-      "file_operations": [
+          "description": "Ensure the route detail view displays origin and destination city names accurately from the fetched route data. Verify that the pricing section shows the complete fare breakdown (baseFare, taxes, serviceFees, total) using route.rateBreakdown and route.priceCents. Remove any placeholder text or mock data references. Confirm the operator name and route details reflect real booking platform data structure."
+        },
         {
           "path": "frontend/src/components/AdminRoutesTable.tsx",
           "operation": "modify",
-          "description": "Verify that Red Bus routes appear in the admin table by ensuring the getAllRoutes query includes all routes. Enhance the table to display rate breakdown details: add columns or expand the existing price column to show baseFare, taxes, serviceFees from route.rateBreakdown, and the total priceCents. Format these amounts for readability. Ensure edit and delete actions work for Red Bus routes by testing the existing handlers with Red Bus route IDs."
+          "description": "Update the admin table to correctly render real city names in the origin and destination columns. Ensure the pricing columns display the itemized breakdown (baseFare, taxes, serviceFees) from route.rateBreakdown accurately. Verify that table sorting and filtering work correctly with real city names and numeric pricing data. Remove any placeholder formatting or test data references."
+        },
+        {
+          "path": "frontend/src/components/BookingSummary.tsx",
+          "operation": "modify",
+          "description": "Ensure the booking summary displays origin and destination city names from the selected route. Verify the price breakdown section shows baseFare, taxes, serviceFees, and total cost using route.rateBreakdown and route.priceCents. Update quantity/multiplier calculations to work with real pricing data. Confirm the total calculation reflects accurate fare components for the booking."
         },
         {
           "path": "frontend/src/components/AdminRouteForm.tsx",
           "operation": "modify",
-          "description": "Verify the route form correctly handles Red Bus route data when editing. Ensure the rate breakdown fields (baseFare, taxes, serviceFees) are properly populated when loading a Red Bus route for editing. The total calculation should automatically sum baseFare + taxes + serviceFees. Test that saving edited Red Bus routes preserves all rate breakdown data."
+          "description": "Verify the form fields for origin and destination accept real city names as text input. Ensure the rate breakdown section (baseFare, taxes, serviceFees fields) correctly calculates and submits itemized pricing data. Update field validation to handle realistic city names and price ranges from booking platforms. Confirm the form correctly populates when editing existing routes with real data."
+        },
+        {
+          "path": "frontend/src/pages/BookingPage.tsx",
+          "operation": "modify",
+          "description": "Ensure the booking page displays origin and destination city names accurately throughout the booking flow. Verify that passenger details form and payment summary show the correct fare breakdown using route.rateBreakdown. Confirm the Stripe checkout session creation uses accurate priceInCents from real route pricing data. Update any display logic that may reference placeholder values."
         }
       ]
     }

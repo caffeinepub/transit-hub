@@ -1,45 +1,58 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-21T07:18:19.792Z",
+  "generatedAt": "2026-02-21T07:31:59.060Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
+    "total": 5,
     "implemented": 1,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Ensure Red Bus routes with transport type 'bus' are stored in the backend with complete fare breakdown including base fare, taxes, and service fees",
+        "summary": "Replace placeholder city names with real city data from RedBus or similar booking platforms (e.g., MakeMyTrip, Goibibo) for all transport types (bus, train, taxi)",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
       },
       {
         "id": "REQ-2",
-        "summary": "Display Red Bus routes in the search results page with correct fare information showing the complete pricing breakdown",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/ResultsPage.tsx",
-          "frontend/src/components/RouteResultCard.tsx",
-          "frontend/src/pages/RouteDetailPage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/RouteResultCard.tsx",
-          "frontend/src/pages/RouteDetailPage.tsx"
-        ]
+        "summary": "Update bus route pricing structure to reflect real RedBus fare data including base fare, taxes, and service fees",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       },
       {
         "id": "REQ-3",
-        "summary": "Verify Red Bus routes are correctly rendered in the AdminRoutesTable with full rate breakdown details visible",
-        "status": "missing",
-        "plannedFiles": [
-          "frontend/src/components/AdminRoutesTable.tsx",
-          "frontend/src/components/AdminRouteForm.tsx"
-        ],
+        "summary": "Update train route pricing to use real-world fare data from booking platforms like IRCTC, MakeMyTrip, or similar services",
+        "status": "unknown",
+        "plannedFiles": [],
         "matchedFiles": []
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Update taxi pricing model to reflect real-world rates from booking platforms like Ola, Uber, or local taxi services based on distance and vehicle type",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Ensure all frontend displays (route cards, detail pages, booking summaries, admin tables) correctly show the updated real city names and pricing for all transport types",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/RouteResultCard.tsx",
+          "frontend/src/pages/RouteDetailPage.tsx",
+          "frontend/src/components/AdminRoutesTable.tsx",
+          "frontend/src/components/BookingSummary.tsx",
+          "frontend/src/components/AdminRouteForm.tsx",
+          "frontend/src/pages/BookingPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/BookingSummary.tsx"
+        ]
       }
     ]
   },
@@ -50,8 +63,7 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/RouteResultCard.tsx",
-    "frontend/src/pages/RouteDetailPage.tsx",
+    "frontend/src/components/BookingSummary.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

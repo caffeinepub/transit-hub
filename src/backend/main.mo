@@ -10,7 +10,6 @@ import Principal "mo:core/Principal";
 import Stripe "stripe/stripe";
 import OutCall "http-outcalls/outcall";
 import AccessControl "authorization/access-control";
-
 import MixinAuthorization "authorization/MixinAuthorization";
 import Migration "migration";
 
@@ -74,13 +73,12 @@ actor {
     timestamp : Time.Time;
   };
 
-  // Data stores
+  // Internal state
   let routes = Map.empty<Text, Route>();
   let reviews = Map.empty<Text, Review>();
   let bookings = Map.empty<Text, Booking>();
   let stripeSessions = Map.empty<Text, Principal>(); // Track session ownership
 
-  // USER AUTHENTICATION & DATA
   public type UserProfile = {
     firstName : Text;
     lastName : Text;

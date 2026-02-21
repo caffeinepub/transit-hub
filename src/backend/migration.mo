@@ -1,22 +1,11 @@
 import Map "mo:core/Map";
+import Text "mo:core/Text";
+import Nat "mo:core/Nat";
 import Principal "mo:core/Principal";
-import Time "mo:core/Time";
 
 module {
-  type TransportType = {
-    #train;
-    #bus;
-    #taxi;
-  };
-
-  type RateBreakdown = {
-    baseFare : Nat;
-    taxes : Nat;
-    serviceFees : Nat;
-  };
-
-  type Route = {
-    transportType : TransportType;
+  type OldRoute = {
+    transportType : { #train; #bus; #taxi };
     id : Text;
     operatorName : Text;
     routeName : Text;
@@ -24,34 +13,34 @@ module {
     destination : Text;
     distanceKm : Nat;
     durationMinutes : Nat;
-    schedule : [Time.Time];
+    schedule : [Int];
     priceCents : Nat;
-    rateBreakdown : RateBreakdown;
+    rateBreakdown : {
+      baseFare : Nat;
+      taxes : Nat;
+      serviceFees : Nat;
+    };
   };
 
-  type Booking = {
+  type OldBooking = {
     id : Text;
     user : Principal;
-    route : Route;
-    bookingTime : Time.Time;
-    status : {
-      #confirmed;
-      #cancelled;
-      #completed;
-    };
+    route : OldRoute;
+    bookingTime : Int;
+    status : { #confirmed; #cancelled; #completed };
     costInStripeCents : Nat;
   };
 
-  type Review = {
+  type OldReview = {
     id : Text;
     bookingId : Text;
     user : Principal;
     rating : Nat;
     reviewText : Text;
-    timestamp : Time.Time;
+    timestamp : Int;
   };
 
-  type UserProfile = {
+  type OldUserProfile = {
     firstName : Text;
     lastName : Text;
     email : Text;
@@ -59,18 +48,21 @@ module {
   };
 
   type OldActor = {
-    routes : Map.Map<Text, Route>;
-    reviews : Map.Map<Text, Review>;
-    bookings : Map.Map<Text, Booking>;
+    routes : Map.Map<Text, OldRoute>;
+    reviews : Map.Map<Text, OldReview>;
+    bookings : Map.Map<Text, OldBooking>;
     stripeSessions : Map.Map<Text, Principal>;
-    userProfiles : Map.Map<Principal, UserProfile>;
-    stripeConfig : ?{
-      secretKey : Text;
-      allowedCountries : [Text];
-    };
+    userProfiles : Map.Map<Principal, OldUserProfile>;
+    // Add more persistent state fields as needed
   };
 
-  public func run(old : OldActor) : OldActor {
-    old;
+  public func run(old : OldActor) : { routes : Map.Map<Text, OldRoute>; reviews : Map.Map<Text, OldReview>; bookings : Map.Map<Text, OldBooking>; stripeSessions : Map.Map<Text, Principal>; userProfiles : Map.Map<Principal, OldUserProfile> } {
+    {
+      routes = old.routes;
+      reviews = old.reviews;
+      bookings = old.bookings;
+      stripeSessions = old.stripeSessions;
+      userProfiles = old.userProfiles;
+    };
   };
 };
