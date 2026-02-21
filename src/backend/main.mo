@@ -8,8 +8,9 @@ import Order "mo:core/Order";
 import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
 import Stripe "stripe/stripe";
-import AccessControl "authorization/access-control";
 import OutCall "http-outcalls/outcall";
+import AccessControl "authorization/access-control";
+
 import MixinAuthorization "authorization/MixinAuthorization";
 import Migration "migration";
 
@@ -25,13 +26,19 @@ actor {
     };
   };
 
-  type TransportType = {
+  public type TransportType = {
     #train;
     #bus;
     #taxi;
   };
 
-  type Route = {
+  public type RateBreakdown = {
+    baseFare : Nat;
+    taxes : Nat;
+    serviceFees : Nat;
+  };
+
+  public type Route = {
     transportType : TransportType;
     id : Text;
     operatorName : Text;
@@ -41,10 +48,11 @@ actor {
     distanceKm : Nat;
     durationMinutes : Nat;
     schedule : [Time.Time];
-    priceCents : Nat;
+    priceCents : Nat; // total price (backward compatibility)
+    rateBreakdown : RateBreakdown;
   };
 
-  type Booking = {
+  public type Booking = {
     id : Text;
     user : Principal;
     route : Route;
@@ -57,7 +65,7 @@ actor {
     costInStripeCents : Nat;
   };
 
-  type Review = {
+  public type Review = {
     id : Text;
     bookingId : Text;
     user : Principal;
@@ -70,6 +78,7 @@ actor {
   let routes = Map.empty<Text, Route>();
   let reviews = Map.empty<Text, Review>();
   let bookings = Map.empty<Text, Booking>();
+  let stripeSessions = Map.empty<Text, Principal>(); // Track session ownership
 
   // USER AUTHENTICATION & DATA
   public type UserProfile = {
@@ -111,6 +120,47 @@ actor {
     routes.add(route.id, route);
   };
 
+  public shared ({ caller }) func addRouteWithRateBreakdown(
+    transportType : TransportType,
+    id : Text,
+    operatorName : Text,
+    routeName : Text,
+    origin : Text,
+    destination : Text,
+    distanceKm : Nat,
+    durationMinutes : Nat,
+    schedule : [Time.Time],
+    baseFare : Nat,
+    taxes : Nat,
+    serviceFees : Nat,
+  ) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can add routes");
+    };
+
+    let totalPrice = baseFare + taxes + serviceFees;
+
+    let newRoute : Route = {
+      transportType;
+      id;
+      operatorName;
+      routeName;
+      origin;
+      destination;
+      distanceKm;
+      durationMinutes;
+      schedule;
+      priceCents = totalPrice;
+      rateBreakdown = {
+        baseFare;
+        taxes;
+        serviceFees;
+      };
+    };
+
+    routes.add(id, newRoute);
+  };
+
   public shared ({ caller }) func updateRoute(route : Route) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can update routes");
@@ -132,7 +182,10 @@ actor {
   // PAYMENT INTEGRATION (Stripe)
   var stripeConfig : ?Stripe.StripeConfiguration = null;
 
-  public query func isStripeConfigured() : async Bool {
+  public query ({ caller }) func isStripeConfigured() : async Bool {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can check Stripe configuration status");
+    };
     stripeConfig != null;
   };
 
@@ -150,15 +203,29 @@ actor {
     };
   };
 
-  public func getStripeSessionStatus(sessionId : Text) : async Stripe.StripeSessionStatus {
-    await Stripe.getSessionStatus(getStripeConfiguration(), sessionId, transform);
+  public shared ({ caller }) func getStripeSessionStatus(sessionId : Text) : async Stripe.StripeSessionStatus {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can check session status");
+    };
+
+    switch (stripeSessions.get(sessionId)) {
+      case (null) { Runtime.trap("Session not found or access denied") };
+      case (?owner) {
+        if (owner != caller and not AccessControl.isAdmin(accessControlState, caller)) {
+          Runtime.trap("Access denied: Cannot view other users' payment sessions");
+        };
+        await Stripe.getSessionStatus(getStripeConfiguration(), sessionId, transform);
+      };
+    };
   };
 
   public shared ({ caller }) func createCheckoutSession(items : [Stripe.ShoppingItem], successUrl : Text, cancelUrl : Text) : async Text {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can create checkout sessions");
     };
-    await Stripe.createCheckoutSession(getStripeConfiguration(), caller, items, successUrl, cancelUrl, transform);
+    let sessionId = await Stripe.createCheckoutSession(getStripeConfiguration(), caller, items, successUrl, cancelUrl, transform);
+    stripeSessions.add(sessionId, caller);
+    sessionId;
   };
 
   public query func transform(input : OutCall.TransformationInput) : async OutCall.TransformationOutput {

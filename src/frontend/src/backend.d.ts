@@ -35,6 +35,11 @@ export interface ShoppingItem {
     priceInCents: bigint;
     productDescription: string;
 }
+export interface RateBreakdown {
+    serviceFees: bigint;
+    taxes: bigint;
+    baseFare: bigint;
+}
 export interface TransformationInput {
     context: Uint8Array;
     response: http_request_result;
@@ -74,6 +79,7 @@ export interface Review {
 export interface Route {
     id: string;
     destination: string;
+    rateBreakdown: RateBreakdown;
     origin: string;
     operatorName: string;
     routeName: string;
@@ -101,6 +107,7 @@ export enum Variant_cancelled_completed_confirmed {
 export interface backendInterface {
     addReview(bookingId: string, rating: bigint, reviewText: string): Promise<string>;
     addRoute(route: Route): Promise<void>;
+    addRouteWithRateBreakdown(transportType: TransportType, id: string, operatorName: string, routeName: string, origin: string, destination: string, distanceKm: bigint, durationMinutes: bigint, schedule: Array<Time>, baseFare: bigint, taxes: bigint, serviceFees: bigint): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     createBooking(booking: Booking): Promise<void>;
     createCheckoutSession(items: Array<ShoppingItem>, successUrl: string, cancelUrl: string): Promise<string>;

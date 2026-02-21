@@ -1,15 +1,17 @@
 import { Outlet, useNavigate } from '@tanstack/react-router';
-import { Menu, X, Train, Bus, Car, History, Heart } from 'lucide-react';
+import { Menu, X, Train, Bus, Car, History, Heart, Settings } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import LoginButton from './LoginButton';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
+import { useIsCallerAdmin } from '../hooks/useQueries';
 
 export default function Layout() {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { identity } = useInternetIdentity();
+  const { data: isAdmin } = useIsCallerAdmin();
 
   const isAuthenticated = !!identity;
 
@@ -17,6 +19,7 @@ export default function Layout() {
     { label: 'Search', path: '/search', icon: Train },
     { label: 'Compare', path: '/compare', icon: Bus },
     ...(isAuthenticated ? [{ label: 'My Bookings', path: '/bookings', icon: History }] : []),
+    ...(isAdmin ? [{ label: 'Admin Cities', path: '/admin/cities', icon: Settings }] : []),
   ];
 
   const handleNavigation = (path: string) => {

@@ -2,15 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-ensure-the-search-functionality-on-the-frontend-properly-displays-the-new-city-routes-and-allows-users-to-search-by-the-newly-added-city-pairs",
-      "featureTitle": "Ensure the search functionality on the frontend properly displays the new city routes and allows users to search by the newly added city pairs",
+      "featureId": "feature-display-red-bus-routes-in-the-search-results-page-with-correct-fare-information-showing-the-complete-pricing-breakdown",
+      "featureTitle": "Display Red Bus routes in the search results page with correct fare information showing the complete pricing breakdown",
       "files": [
-        "frontend/src/components/ResultsFilters.tsx",
-        "frontend/src/components/ResultsSorting.tsx",
         "frontend/src/components/RouteResultCard.tsx",
-        "frontend/src/pages/ResultsPage.tsx",
-        "frontend/src/pages/RouteDetailPage.tsx",
-        "frontend/src/pages/SearchPage.tsx"
+        "frontend/src/pages/RouteDetailPage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -23,7 +19,7 @@
         "http-outcalls@3.0.0"
       ],
       "testIds": [
-        "REQ-14"
+        "REQ-2"
       ],
       "confidence": "high"
     }

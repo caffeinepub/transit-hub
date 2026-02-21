@@ -1,16 +1,18 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Transport booking app with city routes and fare data",
+  "summary": "New project",
   "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Red Bus routes and fares are not displaying in the application"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-ensure-the-search-functionality-on-the-frontend-properly-displays-the-new-city-routes-and-allows-users-to-search-by-the-newly-added-city-pairs",
-      "title": "Ensure the search functionality on the frontend properly displays the new city routes and allows users to search by the newly added city pairs",
+      "id": "feature-display-red-bus-routes-in-the-search-results-page-with-correct-fare-information-showing-the-complete-pricing-breakdown",
+      "title": "Display Red Bus routes in the search results page with correct fare information showing the complete pricing breakdown",
       "reqIds": [
-        "REQ-14"
+        "REQ-2"
       ],
       "version": 1
     }
@@ -18,28 +20,22 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Add cities and fare data by comparing other transport booking sites",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Research and add real city pairs and fare data by comparing with major transport booking sites (e.g., RedBus, MakeMyTrip, Goibibo). Include popular routes within India covering train, bus, and taxi options.",
+      "summary": "Ensure Red Bus routes with transport type 'bus' are stored in the backend with complete fare breakdown including base fare, taxes, and service fees",
       "reqIds": [
-        "REQ-12"
+        "REQ-1"
       ],
       "status": "pending"
     },
     {
       "id": "AR-3",
-      "summary": "Update the backend Route type and data initialization in main.mo to include the new city pairs and fare data with realistic schedules and pricing",
+      "summary": "Verify Red Bus routes are correctly rendered in the AdminRoutesTable with full rate breakdown details visible",
       "reqIds": [
-        "REQ-13"
+        "REQ-3"
       ],
       "status": "pending"
     }
   ],
-  "projectName": "Transport Booking App",
+  "projectName": "Display Red Bus routes and fares in application",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

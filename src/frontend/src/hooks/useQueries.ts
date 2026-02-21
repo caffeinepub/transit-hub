@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { Route, Booking, Review, TransportType, ShoppingItem } from '../backend';
-import { UserProfile } from './useGetCallerUserProfile';
+import type { Route, Booking, Review, TransportType, ShoppingItem, UserProfile } from '../backend';
 
 export function useGetAllRoutes() {
   const { actor, isFetching } = useActor();
@@ -136,10 +135,7 @@ export function useSaveCallerUserProfile() {
   return useMutation({
     mutationFn: async (profile: UserProfile) => {
       if (!actor) throw new Error('Actor not available');
-      // Backend doesn't have saveCallerUserProfile yet
-      // Store in local state for now
-      console.log('Profile would be saved:', profile);
-      return Promise.resolve();
+      return actor.saveCallerUserProfile(profile);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
@@ -209,5 +205,78 @@ export function useIsCallerAdmin() {
       return actor.isCallerAdmin();
     },
     enabled: !!actor && !isFetching,
+  });
+}
+
+interface AddRouteWithRateBreakdownParams {
+  transportType: TransportType;
+  id: string;
+  operatorName: string;
+  routeName: string;
+  origin: string;
+  destination: string;
+  distanceKm: bigint;
+  durationMinutes: bigint;
+  schedule: bigint[];
+  baseFare: bigint;
+  taxes: bigint;
+  serviceFees: bigint;
+}
+
+export function useAddRouteWithRateBreakdown() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (params: AddRouteWithRateBreakdownParams) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.addRouteWithRateBreakdown(
+        params.transportType,
+        params.id,
+        params.operatorName,
+        params.routeName,
+        params.origin,
+        params.destination,
+        params.distanceKm,
+        params.durationMinutes,
+        params.schedule,
+        params.baseFare,
+        params.taxes,
+        params.serviceFees
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['routes'] });
+    },
+  });
+}
+
+export function useUpdateRoute() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (route: Route) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.updateRoute(route);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['routes'] });
+    },
+  });
+}
+
+export function useDeleteRoute() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (routeId: string) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.deleteRoute(routeId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['routes'] });
+    },
   });
 }

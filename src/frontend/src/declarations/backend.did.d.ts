@@ -20,6 +20,11 @@ export interface Booking {
   'bookingTime' : Time,
   'route' : Route,
 }
+export interface RateBreakdown {
+  'serviceFees' : bigint,
+  'taxes' : bigint,
+  'baseFare' : bigint,
+}
 export interface Review {
   'id' : string,
   'bookingId' : string,
@@ -31,6 +36,7 @@ export interface Review {
 export interface Route {
   'id' : string,
   'destination' : string,
+  'rateBreakdown' : RateBreakdown,
   'origin' : string,
   'operatorName' : string,
   'routeName' : string,
@@ -87,6 +93,23 @@ export interface _SERVICE {
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'addReview' : ActorMethod<[string, bigint, string], string>,
   'addRoute' : ActorMethod<[Route], undefined>,
+  'addRouteWithRateBreakdown' : ActorMethod<
+    [
+      TransportType,
+      string,
+      string,
+      string,
+      string,
+      string,
+      bigint,
+      bigint,
+      Array<Time>,
+      bigint,
+      bigint,
+      bigint,
+    ],
+    undefined
+  >,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'createBooking' : ActorMethod<[Booking], undefined>,
   'createCheckoutSession' : ActorMethod<

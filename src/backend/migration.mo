@@ -3,56 +3,20 @@ import Principal "mo:core/Principal";
 import Time "mo:core/Time";
 
 module {
-  // Old type definitions
-  public type OldRoute = {
-    transportType : {
-      #train;
-      #bus;
-      #taxi;
-    };
-    id : Text;
-    operatorName : Text;
-    routeName : Text;
-    schedule : [Time.Time];
-    priceCents : Nat;
+  type TransportType = {
+    #train;
+    #bus;
+    #taxi;
   };
 
-  public type OldBooking = {
-    id : Text;
-    user : Principal;
-    route : {
-      transportType : {
-        #train;
-        #bus;
-        #taxi;
-      };
-      id : Text;
-      operatorName : Text;
-      routeName : Text;
-      schedule : [Time.Time];
-      priceCents : Nat;
-    };
-    bookingTime : Time.Time;
-    status : {
-      #confirmed;
-      #cancelled;
-      #completed;
-    };
-    costInStripeCents : Nat;
+  type RateBreakdown = {
+    baseFare : Nat;
+    taxes : Nat;
+    serviceFees : Nat;
   };
 
-  public type OldActor = {
-    routes : Map.Map<Text, OldRoute>;
-    bookings : Map.Map<Text, OldBooking>;
-  };
-
-  // New type definitions
-  public type NewRoute = {
-    transportType : {
-      #train;
-      #bus;
-      #taxi;
-    };
+  type Route = {
+    transportType : TransportType;
     id : Text;
     operatorName : Text;
     routeName : Text;
@@ -62,12 +26,13 @@ module {
     durationMinutes : Nat;
     schedule : [Time.Time];
     priceCents : Nat;
+    rateBreakdown : RateBreakdown;
   };
 
-  public type NewBooking = {
+  type Booking = {
     id : Text;
     user : Principal;
-    route : NewRoute;
+    route : Route;
     bookingTime : Time.Time;
     status : {
       #confirmed;
@@ -77,46 +42,35 @@ module {
     costInStripeCents : Nat;
   };
 
-  public type NewActor = {
-    routes : Map.Map<Text, NewRoute>;
-    bookings : Map.Map<Text, NewBooking>;
+  type Review = {
+    id : Text;
+    bookingId : Text;
+    user : Principal;
+    rating : Nat;
+    reviewText : Text;
+    timestamp : Time.Time;
   };
 
-  // Transformation functions
-  func transformRouteToNew(oldRoute : OldRoute) : NewRoute {
-    {
-      oldRoute with
-      origin = "";
-      destination = "";
-      distanceKm = 0;
-      durationMinutes = 0;
+  type UserProfile = {
+    firstName : Text;
+    lastName : Text;
+    email : Text;
+    phone : Text;
+  };
+
+  type OldActor = {
+    routes : Map.Map<Text, Route>;
+    reviews : Map.Map<Text, Review>;
+    bookings : Map.Map<Text, Booking>;
+    stripeSessions : Map.Map<Text, Principal>;
+    userProfiles : Map.Map<Principal, UserProfile>;
+    stripeConfig : ?{
+      secretKey : Text;
+      allowedCountries : [Text];
     };
   };
 
-  func transformBookingToNew(oldBooking : OldBooking) : NewBooking {
-    {
-      oldBooking with
-      route = transformRouteToNew(oldBooking.route);
-    };
-  };
-
-  // Main migration function
-  public func run(old : OldActor) : NewActor {
-    let newRoutes = old.routes.map<Text, OldRoute, NewRoute>(
-      func(_id, oldRoute) {
-        transformRouteToNew(oldRoute);
-      }
-    );
-
-    let newBookings = old.bookings.map<Text, OldBooking, NewBooking>(
-      func(_id, oldBooking) {
-        transformBookingToNew(oldBooking);
-      }
-    );
-
-    {
-      routes = newRoutes;
-      bookings = newBookings;
-    };
+  public func run(old : OldActor) : OldActor {
+    old;
   };
 };

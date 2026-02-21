@@ -11,6 +11,7 @@ import BookingHistoryPage from './pages/BookingHistoryPage';
 import BookingDetailPage from './pages/BookingDetailPage';
 import ComparePage from './pages/ComparePage';
 import RouteDetailPage from './pages/RouteDetailPage';
+import AdminCitiesPage from './pages/AdminCitiesPage';
 import { Toaster } from '@/components/ui/sonner';
 
 const rootRoute = createRootRoute({
@@ -83,6 +84,12 @@ const routeDetailRoute = createRoute({
   component: RouteDetailPage,
 });
 
+const adminCitiesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/cities',
+  component: AdminCitiesPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   searchRoute,
@@ -95,6 +102,7 @@ const routeTree = rootRoute.addChildren([
   bookingDetailRoute,
   compareRoute,
   routeDetailRoute,
+  adminCitiesRoute,
 ]);
 
 const router = createRouter({ routeTree });

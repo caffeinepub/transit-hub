@@ -2,8 +2,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate } from '@tanstack/react-router';
-import { Train, Bus, Car, Clock, Star, Info, MapPin, Navigation } from 'lucide-react';
+import { Train, Bus, Car, Clock, Star, Info, MapPin, Navigation, Receipt } from 'lucide-react';
 import type { Route } from '../backend';
 import { useGetReviewsForRoute } from '../hooks/useQueries';
 import { useCompareRoutes } from '../hooks/useCompareRoutes';
@@ -64,6 +65,10 @@ export default function RouteResultCard({ route }: RouteResultCardProps) {
     return `${mins}m`;
   };
 
+  const formatPrice = (cents: bigint) => {
+    return `₹${(Number(cents) / 100).toFixed(0)}`;
+  };
+
   const handleCompareToggle = () => {
     if (isSelected) {
       removeRoute(route.id);
@@ -71,6 +76,27 @@ export default function RouteResultCard({ route }: RouteResultCardProps) {
       addRoute(route);
     }
   };
+
+  const fareBreakdownContent = (
+    <div className="space-y-2 text-sm">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Base Fare:</span>
+        <span className="font-medium">{formatPrice(route.rateBreakdown.baseFare)}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Taxes:</span>
+        <span className="font-medium">{formatPrice(route.rateBreakdown.taxes)}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Service Fees:</span>
+        <span className="font-medium">{formatPrice(route.rateBreakdown.serviceFees)}</span>
+      </div>
+      <div className="border-t pt-2 flex justify-between font-semibold">
+        <span>Total:</span>
+        <span className="text-primary">{formatPrice(route.priceCents)}</span>
+      </div>
+    </div>
+  );
 
   return (
     <Card className="hover:shadow-lg transition-shadow">
@@ -103,8 +129,24 @@ export default function RouteResultCard({ route }: RouteResultCardProps) {
                 <p className="text-sm text-muted-foreground">{route.operatorName}</p>
               </div>
               <div className="text-right">
-                <p className="text-2xl font-bold text-primary">₹{(Number(route.priceCents) / 100).toFixed(0)}</p>
-                <p className="text-xs text-muted-foreground">per person</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="cursor-help">
+                        <div className="flex items-center gap-1 justify-end">
+                          <p className="text-2xl font-bold text-primary">
+                            {formatPrice(route.priceCents)}
+                          </p>
+                          <Receipt className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                        <p className="text-xs text-muted-foreground">per person</p>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="left" className="w-64">
+                      {fareBreakdownContent}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </div>
 

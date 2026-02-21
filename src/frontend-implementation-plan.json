@@ -1,46 +1,52 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Update frontend to display new city routes and fare data",
+  "title": "Display Red Bus routes and fares in application",
   "requirements": [
     {
-      "id": "REQ-14",
-      "summary": "Ensure the search functionality on the frontend properly displays the new city routes and allows users to search by the newly added city pairs",
+      "id": "REQ-2",
+      "summary": "Display Red Bus routes in the search results page with correct fare information showing the complete pricing breakdown",
       "acceptanceCriteria": [
-        "Search results page shows the new routes when users search for the added city pairs",
-        "Filter and sort functionality works correctly with the expanded route data",
-        "Route cards display accurate fare information matching the backend data"
+        "Red Bus routes appear in search results when filtering by bus transport type",
+        "Route cards display the total fare calculated from base fare + taxes + service fees",
+        "Fare breakdown is visible in route details showing itemized costs"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/SearchPage.tsx",
-          "operation": "modify",
-          "description": "Verify that the search form properly handles origin and destination city pairs and passes them to the results page. Ensure the search query navigation includes all necessary parameters for the expanded route data (origin, destination, date, passengers, transport mode)."
-        },
-        {
           "path": "frontend/src/pages/ResultsPage.tsx",
           "operation": "modify",
-          "description": "Ensure the results page correctly fetches and displays routes based on search parameters. Verify that the getAllRoutes query properly handles the expanded dataset with 20-30 new city pairs. Confirm that filtering and sorting work correctly with the larger route dataset, including proper handling of fare prices, transport types, and route details."
+          "description": "Ensure Red Bus routes are included in search results by verifying the getAllRoutes query properly fetches all routes including Red Bus. The existing transport type filter should already handle bus routes, but verify Red Bus routes with transport type 'bus' are displayed correctly in the results grid."
         },
         {
           "path": "frontend/src/components/RouteResultCard.tsx",
           "operation": "modify",
-          "description": "Verify that the RouteResultCard component correctly displays route information including origin, destination, operator name, departure/arrival times, duration, price, and transport type. Ensure fare pricing is displayed accurately with proper formatting (converting from cents to currency display). Confirm that all route details from the expanded dataset are properly rendered in the card UI."
-        },
-        {
-          "path": "frontend/src/components/ResultsFilters.tsx",
-          "operation": "modify",
-          "description": "Verify that the price range filter properly handles the new fare ranges from competitor research data. Ensure the filter min/max values accommodate realistic pricing for train, bus, and taxi options across all new city pairs. Confirm transport type filters (train, bus, taxi) work correctly with the expanded route dataset."
-        },
-        {
-          "path": "frontend/src/components/ResultsSorting.tsx",
-          "operation": "modify",
-          "description": "Verify that sorting by price (ascending/descending) works correctly with the new fare data. Ensure sorting by departure time handles the realistic schedules from the expanded route dataset. Confirm all sorting operations perform well with 20-30 additional city pair routes."
+          "description": "Verify the route card displays the correct total fare for Red Bus routes. The price should be calculated from route.priceCents which must reflect the sum of baseFare + taxes + serviceFees from the rateBreakdown. Add a visual indicator or tooltip showing the fare breakdown (base fare, taxes, service fees) when users hover over or click the price."
         },
         {
           "path": "frontend/src/pages/RouteDetailPage.tsx",
           "operation": "modify",
-          "description": "Verify that the route detail page displays complete route information including origin, destination, operator name, transport type, schedule times, duration, distance, and pricing. Ensure all fields from the expanded Route type are properly rendered. Confirm that fare information matches the backend data and is displayed in a user-friendly format."
+          "description": "Add a detailed fare breakdown section in the route details view that displays the itemized costs from route.rateBreakdown. Show baseFare, taxes, serviceFees as separate line items with labels, followed by the total. Format all amounts consistently (converting from cents to currency display). Ensure this breakdown is visible for all routes including Red Bus."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Verify Red Bus routes are correctly rendered in the AdminRoutesTable with full rate breakdown details visible",
+      "acceptanceCriteria": [
+        "Red Bus entries appear in the admin routes table",
+        "Rate breakdown columns show base fare, taxes, service fees, and total for Red Bus routes",
+        "Edit and delete actions work correctly for Red Bus routes"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/AdminRoutesTable.tsx",
+          "operation": "modify",
+          "description": "Verify that Red Bus routes appear in the admin table by ensuring the getAllRoutes query includes all routes. Enhance the table to display rate breakdown details: add columns or expand the existing price column to show baseFare, taxes, serviceFees from route.rateBreakdown, and the total priceCents. Format these amounts for readability. Ensure edit and delete actions work for Red Bus routes by testing the existing handlers with Red Bus route IDs."
+        },
+        {
+          "path": "frontend/src/components/AdminRouteForm.tsx",
+          "operation": "modify",
+          "description": "Verify the route form correctly handles Red Bus route data when editing. Ensure the rate breakdown fields (baseFare, taxes, serviceFees) are properly populated when loading a Red Bus route for editing. The total calculation should automatically sum baseFare + taxes + serviceFees. Test that saving edited Red Bus routes preserves all rate breakdown data."
         }
       ]
     }

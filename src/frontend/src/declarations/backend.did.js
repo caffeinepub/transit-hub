@@ -8,6 +8,11 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const RateBreakdown = IDL.Record({
+  'serviceFees' : IDL.Nat,
+  'taxes' : IDL.Nat,
+  'baseFare' : IDL.Nat,
+});
 export const TransportType = IDL.Variant({
   'bus' : IDL.Null,
   'train' : IDL.Null,
@@ -17,6 +22,7 @@ export const Time = IDL.Int;
 export const Route = IDL.Record({
   'id' : IDL.Text,
   'destination' : IDL.Text,
+  'rateBreakdown' : RateBreakdown,
   'origin' : IDL.Text,
   'operatorName' : IDL.Text,
   'routeName' : IDL.Text,
@@ -98,6 +104,24 @@ export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'addReview' : IDL.Func([IDL.Text, IDL.Nat, IDL.Text], [IDL.Text], []),
   'addRoute' : IDL.Func([Route], [], []),
+  'addRouteWithRateBreakdown' : IDL.Func(
+      [
+        TransportType,
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+        IDL.Nat,
+        IDL.Nat,
+        IDL.Vec(Time),
+        IDL.Nat,
+        IDL.Nat,
+        IDL.Nat,
+      ],
+      [],
+      [],
+    ),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'createBooking' : IDL.Func([Booking], [], []),
   'createCheckoutSession' : IDL.Func(
@@ -160,6 +184,11 @@ export const idlService = IDL.Service({
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const RateBreakdown = IDL.Record({
+    'serviceFees' : IDL.Nat,
+    'taxes' : IDL.Nat,
+    'baseFare' : IDL.Nat,
+  });
   const TransportType = IDL.Variant({
     'bus' : IDL.Null,
     'train' : IDL.Null,
@@ -169,6 +198,7 @@ export const idlFactory = ({ IDL }) => {
   const Route = IDL.Record({
     'id' : IDL.Text,
     'destination' : IDL.Text,
+    'rateBreakdown' : RateBreakdown,
     'origin' : IDL.Text,
     'operatorName' : IDL.Text,
     'routeName' : IDL.Text,
@@ -247,6 +277,24 @@ export const idlFactory = ({ IDL }) => {
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'addReview' : IDL.Func([IDL.Text, IDL.Nat, IDL.Text], [IDL.Text], []),
     'addRoute' : IDL.Func([Route], [], []),
+    'addRouteWithRateBreakdown' : IDL.Func(
+        [
+          TransportType,
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+          IDL.Nat,
+          IDL.Nat,
+          IDL.Vec(Time),
+          IDL.Nat,
+          IDL.Nat,
+          IDL.Nat,
+        ],
+        [],
+        [],
+      ),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'createBooking' : IDL.Func([Booking], [], []),
     'createCheckoutSession' : IDL.Func(

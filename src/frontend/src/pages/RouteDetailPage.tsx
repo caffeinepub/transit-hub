@@ -66,6 +66,10 @@ export default function RouteDetailPage() {
     return `${mins}m`;
   };
 
+  const formatPrice = (cents: bigint) => {
+    return `₹${(Number(cents) / 100).toFixed(2)}`;
+  };
+
   return (
     <div className="container py-8">
       <div className="flex items-center gap-4 mb-6">
@@ -93,10 +97,10 @@ export default function RouteDetailPage() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Price per person</p>
-                <p className="text-3xl font-bold text-primary">₹{(Number(route.priceCents) / 100).toFixed(0)}</p>
+                <p className="text-sm text-muted-foreground mb-2">Price per person</p>
+                <p className="text-3xl font-bold text-primary">{formatPrice(route.priceCents)}</p>
               </div>
               {averageRating > 0 && (
                 <div className="text-right">
@@ -107,6 +111,31 @@ export default function RouteDetailPage() {
                   <p className="text-sm text-muted-foreground">{reviews.length} reviews</p>
                 </div>
               )}
+            </div>
+
+            <Separator />
+
+            <div>
+              <h3 className="font-semibold mb-3">Fare Breakdown</h3>
+              <div className="bg-muted rounded-lg p-4 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Base Fare</span>
+                  <span className="font-medium">{formatPrice(route.rateBreakdown.baseFare)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Taxes</span>
+                  <span className="font-medium">{formatPrice(route.rateBreakdown.taxes)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Service Fees</span>
+                  <span className="font-medium">{formatPrice(route.rateBreakdown.serviceFees)}</span>
+                </div>
+                <Separator className="my-2" />
+                <div className="flex justify-between font-semibold">
+                  <span>Total</span>
+                  <span className="text-primary text-lg">{formatPrice(route.priceCents)}</span>
+                </div>
+              </div>
             </div>
 
             <Separator />

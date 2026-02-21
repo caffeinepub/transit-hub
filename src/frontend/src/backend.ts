@@ -117,6 +117,11 @@ export interface ShoppingItem {
     priceInCents: bigint;
     productDescription: string;
 }
+export interface RateBreakdown {
+    serviceFees: bigint;
+    taxes: bigint;
+    baseFare: bigint;
+}
 export interface TransformationInput {
     context: Uint8Array;
     response: http_request_result;
@@ -156,6 +161,7 @@ export interface Review {
 export interface Route {
     id: string;
     destination: string;
+    rateBreakdown: RateBreakdown;
     origin: string;
     operatorName: string;
     routeName: string;
@@ -184,6 +190,7 @@ export interface backendInterface {
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     addReview(bookingId: string, rating: bigint, reviewText: string): Promise<string>;
     addRoute(route: Route): Promise<void>;
+    addRouteWithRateBreakdown(transportType: TransportType, id: string, operatorName: string, routeName: string, origin: string, destination: string, distanceKm: bigint, durationMinutes: bigint, schedule: Array<Time>, baseFare: bigint, taxes: bigint, serviceFees: bigint): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     createBooking(booking: Booking): Promise<void>;
     createCheckoutSession(items: Array<ShoppingItem>, successUrl: string, cancelUrl: string): Promise<string>;
@@ -210,7 +217,7 @@ export interface backendInterface {
     updateBooking(booking: Booking): Promise<void>;
     updateRoute(route: Route): Promise<void>;
 }
-import type { Booking as _Booking, Route as _Route, StripeSessionStatus as _StripeSessionStatus, Time as _Time, TransportType as _TransportType, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
+import type { Booking as _Booking, RateBreakdown as _RateBreakdown, Route as _Route, StripeSessionStatus as _StripeSessionStatus, Time as _Time, TransportType as _TransportType, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _initializeAccessControlWithSecret(arg0: string): Promise<void> {
@@ -252,6 +259,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.addRoute(to_candid_Route_n1(this._uploadFile, this._downloadFile, arg0));
+            return result;
+        }
+    }
+    async addRouteWithRateBreakdown(arg0: TransportType, arg1: string, arg2: string, arg3: string, arg4: string, arg5: string, arg6: bigint, arg7: bigint, arg8: Array<Time>, arg9: bigint, arg10: bigint, arg11: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.addRouteWithRateBreakdown(to_candid_TransportType_n3(this._uploadFile, this._downloadFile, arg0), arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.addRouteWithRateBreakdown(to_candid_TransportType_n3(this._uploadFile, this._downloadFile, arg0), arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
             return result;
         }
     }
@@ -630,6 +651,7 @@ function from_candid_opt_n24(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
 function from_candid_record_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     id: string;
     destination: string;
+    rateBreakdown: _RateBreakdown;
     origin: string;
     operatorName: string;
     routeName: string;
@@ -641,6 +663,7 @@ function from_candid_record_n12(_uploadFile: (file: ExternalBlob) => Promise<Uin
 }): {
     id: string;
     destination: string;
+    rateBreakdown: RateBreakdown;
     origin: string;
     operatorName: string;
     routeName: string;
@@ -653,6 +676,7 @@ function from_candid_record_n12(_uploadFile: (file: ExternalBlob) => Promise<Uin
     return {
         id: value.id,
         destination: value.destination,
+        rateBreakdown: value.rateBreakdown,
         origin: value.origin,
         operatorName: value.operatorName,
         routeName: value.routeName,
@@ -782,6 +806,7 @@ function to_candid_UserRole_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint
 function to_candid_record_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     id: string;
     destination: string;
+    rateBreakdown: RateBreakdown;
     origin: string;
     operatorName: string;
     routeName: string;
@@ -793,6 +818,7 @@ function to_candid_record_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
 }): {
     id: string;
     destination: string;
+    rateBreakdown: _RateBreakdown;
     origin: string;
     operatorName: string;
     routeName: string;
@@ -805,6 +831,7 @@ function to_candid_record_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
     return {
         id: value.id,
         destination: value.destination,
+        rateBreakdown: value.rateBreakdown,
         origin: value.origin,
         operatorName: value.operatorName,
         routeName: value.routeName,

@@ -1,68 +1,72 @@
 {
   "kind": "build_request",
-  "title": "Add city routes and fare data from competitor research",
-  "priority": "normal",
+  "title": "Display Red Bus routes and fares in application",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-12",
-      "text": "Research and add real city pairs and fare data by comparing with major transport booking sites (e.g., RedBus, MakeMyTrip, Goibibo). Include popular routes within India covering train, bus, and taxi options.",
+      "id": "REQ-1",
+      "text": "Ensure Red Bus routes with transport type 'bus' are stored in the backend with complete fare breakdown including base fare, taxes, and service fees",
       "target": "backend",
       "source": {
         "messageIds": [
-          "msg-latest"
+          "msg-last"
         ],
         "quotes": [
-          "add cities and its fare by comparing other site on internet"
+          "red bus route and its fare are not reflected in project"
         ]
       },
       "acceptanceCriteria": [
-        "At least 20-30 city pairs are added covering major Indian cities (e.g., Delhi-Mumbai, Bangalore-Chennai, Kolkata-Hyderabad)",
-        "Fare prices are realistic and competitive based on current market rates from competitor sites",
-        "Multiple transport modes (train, bus, taxi) are available for popular routes",
-        "Each route includes operator name, departure time, arrival time, duration, and pricing that matches industry standards"
+        "Backend returns Red Bus routes when querying all routes",
+        "Red Bus route data includes operator name, origin, destination, schedule, and complete rate breakdown",
+        "Rate breakdown contains base fare, tax amount, service fee, and total fare calculations"
       ]
     },
     {
-      "id": "REQ-13",
-      "text": "Update the backend Route type and data initialization in main.mo to include the new city pairs and fare data with realistic schedules and pricing",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-latest"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Routes are added to the backend's stable state during initialization",
-        "Each route has complete information: origin, destination, transportType, operator, departureTime, arrivalTime, price, availableSeats/vehicles",
-        "Data persists across canister upgrades"
-      ]
-    },
-    {
-      "id": "REQ-14",
-      "text": "Ensure the search functionality on the frontend properly displays the new city routes and allows users to search by the newly added city pairs",
+      "id": "REQ-2",
+      "text": "Display Red Bus routes in the search results page with correct fare information showing the complete pricing breakdown",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-latest"
+          "msg-last"
+        ],
+        "quotes": [
+          "red bus route and its fare are not reflected in project"
         ]
       },
       "acceptanceCriteria": [
-        "Search results page shows the new routes when users search for the added city pairs",
-        "Filter and sort functionality works correctly with the expanded route data",
-        "Route cards display accurate fare information matching the backend data"
+        "Red Bus routes appear in search results when filtering by bus transport type",
+        "Route cards display the total fare calculated from base fare + taxes + service fees",
+        "Fare breakdown is visible in route details showing itemized costs"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Verify Red Bus routes are correctly rendered in the AdminRoutesTable with full rate breakdown details visible",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ],
+        "quotes": [
+          "red bus route and its fare are not reflected in project"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Red Bus entries appear in the admin routes table",
+        "Rate breakdown columns show base fare, taxes, service fees, and total for Red Bus routes",
+        "Edit and delete actions work correctly for Red Bus routes"
       ]
     }
   ],
   "constraints": [
-    "Use real city names and realistic fare ranges based on competitor research",
-    "Maintain existing Route data structure in backend/main.mo",
-    "Do not modify the search or results page UI components beyond necessary data display updates"
+    "Use existing Route data structure with rate breakdown fields (baseFare, taxes, serviceFee)",
+    "Maintain compatibility with current search and filtering logic",
+    "Preserve existing transport type handling for train, bus, and taxi"
   ],
   "nonGoals": [
-    "Integration with live pricing APIs or external booking systems",
-    "Dynamic pricing based on demand or availability",
-    "Automated web scraping or real-time fare updates",
-    "Adding new cities beyond the initial research set"
+    "Adding new transport types beyond existing bus, train, taxi",
+    "Modifying the rate calculation formula or pricing structure",
+    "Changes to booking flow or payment integration"
   ],
   "imageRequirements": {
     "required": [],

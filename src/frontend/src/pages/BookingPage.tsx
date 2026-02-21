@@ -8,6 +8,7 @@ import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import PassengerDetailsForm from '../components/PassengerDetailsForm';
 import PaymentSetup from '../components/PaymentSetup';
 import { toast } from 'sonner';
+import { Variant_cancelled_completed_confirmed } from '../backend';
 
 export default function BookingPage() {
   const { routeId } = useParams({ strict: false });
@@ -63,7 +64,7 @@ export default function BookingPage() {
         user: identity.getPrincipal(),
         route,
         bookingTime: BigInt(Date.now() * 1000000),
-        status: { confirmed: null } as any,
+        status: Variant_cancelled_completed_confirmed.confirmed,
         costInStripeCents: route.priceCents,
       };
 
