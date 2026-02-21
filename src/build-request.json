@@ -1,0 +1,71 @@
+{
+  "kind": "build_request",
+  "title": "Add city routes and fare data from competitor research",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-12",
+      "text": "Research and add real city pairs and fare data by comparing with major transport booking sites (e.g., RedBus, MakeMyTrip, Goibibo). Include popular routes within India covering train, bus, and taxi options.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "add cities and its fare by comparing other site on internet"
+        ]
+      },
+      "acceptanceCriteria": [
+        "At least 20-30 city pairs are added covering major Indian cities (e.g., Delhi-Mumbai, Bangalore-Chennai, Kolkata-Hyderabad)",
+        "Fare prices are realistic and competitive based on current market rates from competitor sites",
+        "Multiple transport modes (train, bus, taxi) are available for popular routes",
+        "Each route includes operator name, departure time, arrival time, duration, and pricing that matches industry standards"
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "text": "Update the backend Route type and data initialization in main.mo to include the new city pairs and fare data with realistic schedules and pricing",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Routes are added to the backend's stable state during initialization",
+        "Each route has complete information: origin, destination, transportType, operator, departureTime, arrivalTime, price, availableSeats/vehicles",
+        "Data persists across canister upgrades"
+      ]
+    },
+    {
+      "id": "REQ-14",
+      "text": "Ensure the search functionality on the frontend properly displays the new city routes and allows users to search by the newly added city pairs",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Search results page shows the new routes when users search for the added city pairs",
+        "Filter and sort functionality works correctly with the expanded route data",
+        "Route cards display accurate fare information matching the backend data"
+      ]
+    }
+  ],
+  "constraints": [
+    "Use real city names and realistic fare ranges based on competitor research",
+    "Maintain existing Route data structure in backend/main.mo",
+    "Do not modify the search or results page UI components beyond necessary data display updates"
+  ],
+  "nonGoals": [
+    "Integration with live pricing APIs or external booking systems",
+    "Dynamic pricing based on demand or availability",
+    "Automated web scraping or real-time fare updates",
+    "Adding new cities beyond the initial research set"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

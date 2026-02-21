@@ -1,0 +1,73 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-20T13:18:29.346Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 3,
+    "implemented": 1,
+    "items": [
+      {
+        "id": "REQ-12",
+        "summary": "Research and add real city pairs and fare data by comparing with major transport booking sites (e.g., RedBus, MakeMyTrip, Goibibo). Include popular routes within India covering train, bus, and taxi options.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-13",
+        "summary": "Update the backend Route type and data initialization in main.mo to include the new city pairs and fare data with realistic schedules and pricing",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-14",
+        "summary": "Ensure the search functionality on the frontend properly displays the new city routes and allows users to search by the newly added city pairs",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/SearchPage.tsx",
+          "frontend/src/pages/ResultsPage.tsx",
+          "frontend/src/components/RouteResultCard.tsx",
+          "frontend/src/components/ResultsFilters.tsx",
+          "frontend/src/components/ResultsSorting.tsx",
+          "frontend/src/pages/RouteDetailPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/SearchPage.tsx",
+          "frontend/src/pages/ResultsPage.tsx",
+          "frontend/src/components/RouteResultCard.tsx",
+          "frontend/src/components/ResultsFilters.tsx",
+          "frontend/src/components/ResultsSorting.tsx",
+          "frontend/src/pages/RouteDetailPage.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "build-request.json",
+    "build-template/README.md",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/ResultsFilters.tsx",
+    "frontend/src/components/ResultsSorting.tsx",
+    "frontend/src/components/RouteResultCard.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/pages/ResultsPage.tsx",
+    "frontend/src/pages/RouteDetailPage.tsx",
+    "frontend/src/pages/SearchPage.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

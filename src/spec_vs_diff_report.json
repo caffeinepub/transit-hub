@@ -1,0 +1,46 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-20T13:18:29.343Z",
+  "summary": "The diff shows backend Route type updates (origin, destination, distanceKm, durationMinutes fields) and frontend UI changes for displaying route details, but does not include actual city pair data or realistic fare research from competitor sites. The migration file and type definitions are present, but no routes matching the requirement (20-30 city pairs with real Indian cities and competitor-researched fares) have been added.",
+  "missing_requirements": [
+    {
+      "id": "REQ-12",
+      "requirement": "Research and add real city pairs and fare data by comparing with major transport booking sites (e.g., RedBus, MakeMyTrip, Goibibo). Include popular routes within India covering train, bus, and taxi options.",
+      "reason": "No evidence of actual city pair data being added. The Route type structure was updated to support origin/destination fields, but no initialization code or data showing 20-30 city pairs (Delhi-Mumbai, Bangalore-Chennai, etc.) with researched fares is present in backend/main.mo.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "requirement": "Routes are added to the backend's stable state during initialization with complete information and realistic schedules/pricing",
+      "reason": "While the Route type definition includes all required fields (origin, destination, transportType, operator, departureTime, arrivalTime, price, availableSeats/vehicles via schedule), there is no evidence of route initialization code that populates these routes with real data. The diff shows 'let routes = Map.empty<Text, Route>();' but no addRoute calls or initialization logic with actual city pairs.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Migration module for transforming old Route structure to new Route structure with origin/destination fields",
+      "reason": "The BuildRequest does not mention data migration or handling existing routes. It focuses on adding new city pairs and fare data, not migrating old data structures. The migration.mo file appears to be infrastructure not requested in the requirements.",
+      "evidence": [
+        "backend/migration.mo"
+      ]
+    }
+  ],
+  "confidence": 0.85,
+  "changed_files": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "frontend-file-summaries.txt",
+    "frontend/src/components/ResultsFilters.tsx",
+    "frontend/src/components/ResultsSorting.tsx",
+    "frontend/src/components/RouteResultCard.tsx",
+    "frontend/src/pages/ResultsPage.tsx",
+    "frontend/src/pages/RouteDetailPage.tsx",
+    "frontend/src/pages/SearchPage.tsx",
+    "project_state.json"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "frontend/src/components/SeatMap.tsx": "Interactive seat selection grid showing available, occupied, and selected seats with click-to-select functionality and aisle spacing between seat columns.",
+  "frontend/src/hooks/useGetCallerUserProfile.ts": "React Query hook for fetching current user profile with proper loading state management, currently returns null as backend method is not yet implemented.",
+  "frontend/src/hooks/useQueries.ts": "Centralized React Query hooks for all backend operations including routes, bookings, reviews, Stripe configuration; user profile methods use temporary implementations until backend is updated.",
+  "frontend/src/components/ProfileSetupModal.tsx": "Modal dialog for first-time user profile creation collecting name, email, and phone information with temporary save implementation.",
+  "frontend/src/components/Layout.tsx": "Root layout component with responsive header navigation, mobile menu, and footer with attribution (removed profile setup modal integration until backend is ready).",
+  "frontend/src/components/RouteResultCard.tsx": "Route card component displaying origin, destination, distance, duration, price, operator, transport type, and booking options with comparison checkbox functionality.",
+  "frontend/src/pages/RouteDetailPage.tsx": "Detailed route view page showing complete route information including origin, destination, distance, duration, schedules, pricing, reviews, and booking button.",
+  "frontend/src/pages/ResultsPage.tsx": "Search results page with filtering by origin/destination from search params, transport type, price range, and sorting by price, departure time, or duration.",
+  "frontend/src/components/ResultsFilters.tsx": "Filter sidebar component with price range slider (₹0-₹5000), transport type checkboxes, and minimum rating filter for route results.",
+  "frontend/src/components/ResultsSorting.tsx": "Sorting dropdown component with options for price (ascending/descending), departure time, and duration sorting.",
+  "frontend/src/pages/SearchPage.tsx": "Homepage with hero banner and search form for origin, destination, date, passengers, and transport mode selection with improved copy for Indian cities."
+}

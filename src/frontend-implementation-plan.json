@@ -1,0 +1,48 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Update frontend to display new city routes and fare data",
+  "requirements": [
+    {
+      "id": "REQ-14",
+      "summary": "Ensure the search functionality on the frontend properly displays the new city routes and allows users to search by the newly added city pairs",
+      "acceptanceCriteria": [
+        "Search results page shows the new routes when users search for the added city pairs",
+        "Filter and sort functionality works correctly with the expanded route data",
+        "Route cards display accurate fare information matching the backend data"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/SearchPage.tsx",
+          "operation": "modify",
+          "description": "Verify that the search form properly handles origin and destination city pairs and passes them to the results page. Ensure the search query navigation includes all necessary parameters for the expanded route data (origin, destination, date, passengers, transport mode)."
+        },
+        {
+          "path": "frontend/src/pages/ResultsPage.tsx",
+          "operation": "modify",
+          "description": "Ensure the results page correctly fetches and displays routes based on search parameters. Verify that the getAllRoutes query properly handles the expanded dataset with 20-30 new city pairs. Confirm that filtering and sorting work correctly with the larger route dataset, including proper handling of fare prices, transport types, and route details."
+        },
+        {
+          "path": "frontend/src/components/RouteResultCard.tsx",
+          "operation": "modify",
+          "description": "Verify that the RouteResultCard component correctly displays route information including origin, destination, operator name, departure/arrival times, duration, price, and transport type. Ensure fare pricing is displayed accurately with proper formatting (converting from cents to currency display). Confirm that all route details from the expanded dataset are properly rendered in the card UI."
+        },
+        {
+          "path": "frontend/src/components/ResultsFilters.tsx",
+          "operation": "modify",
+          "description": "Verify that the price range filter properly handles the new fare ranges from competitor research data. Ensure the filter min/max values accommodate realistic pricing for train, bus, and taxi options across all new city pairs. Confirm transport type filters (train, bus, taxi) work correctly with the expanded route dataset."
+        },
+        {
+          "path": "frontend/src/components/ResultsSorting.tsx",
+          "operation": "modify",
+          "description": "Verify that sorting by price (ascending/descending) works correctly with the new fare data. Ensure sorting by departure time handles the realistic schedules from the expanded route dataset. Confirm all sorting operations perform well with 20-30 additional city pair routes."
+        },
+        {
+          "path": "frontend/src/pages/RouteDetailPage.tsx",
+          "operation": "modify",
+          "description": "Verify that the route detail page displays complete route information including origin, destination, operator name, transport type, schedule times, duration, distance, and pricing. Ensure all fields from the expanded Route type are properly rendered. Confirm that fare information matches the backend data and is displayed in a user-friendly format."
+        }
+      ]
+    }
+  ]
+}
