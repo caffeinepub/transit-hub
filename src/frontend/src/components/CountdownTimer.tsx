@@ -32,8 +32,9 @@ function CountdownUnit({ value, label }: CountdownUnitProps) {
         className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-2xl flex items-center justify-center mb-3 overflow-hidden shadow-romantic"
         style={{
           background:
-            "linear-gradient(135deg, oklch(0.97 0.01 30) 0%, oklch(0.94 0.03 355) 100%)",
-          border: "1px solid oklch(0.85 0.09 355 / 0.4)",
+            "linear-gradient(135deg, oklch(0.99 0.01 30 / 0.80) 0%, oklch(0.97 0.02 355 / 0.70) 100%)",
+          border: "1px solid oklch(0.98 0.01 60 / 0.50)",
+          backdropFilter: "blur(12px)",
         }}
       >
         {/* Decorative corner accents */}
@@ -52,7 +53,7 @@ function CountdownUnit({ value, label }: CountdownUnitProps) {
 
         <span
           className="font-display font-semibold text-3xl sm:text-4xl md:text-5xl tabular-nums"
-          style={{ color: "oklch(var(--wine))" }}
+          style={{ color: "oklch(0.22 0.06 355)" }}
         >
           {String(value).padStart(2, "0")}
         </span>

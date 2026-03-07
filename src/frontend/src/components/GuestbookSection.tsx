@@ -17,18 +17,18 @@ interface Wish {
 const initialWishes: Wish[] = [
   {
     id: "1",
-    name: "Priya & Rahul Gaikwad",
+    name: "Vilas & Surekha Gaikwad",
     message:
-      "Akshay and Snehal, you two were always meant to find each other. From the moment we saw you together, we knew this day would come. Wishing you a lifetime of joy, laughter, and endless love. Can't wait to celebrate with you! 🌹",
-    avatar: "P",
+      "From the moment we saw you together, we knew this day would come. Wishing you a lifetime of joy, laughter, and endless love. Can't wait to celebrate with you! 🌹",
+    avatar: "V",
     timestamp: "March 1, 2026",
   },
   {
     id: "2",
-    name: "Kavita Rokade",
+    name: "Subhash Rokade",
     message:
       "Snehal, my dearest — you deserve every bit of the happiness that Akshay brings to your life. He's a lucky man! Here's to a forever full of beautiful moments and adventures together. Much love! 💕",
-    avatar: "K",
+    avatar: "S",
     timestamp: "March 3, 2026",
   },
   {
@@ -106,9 +106,9 @@ export function GuestbookSection() {
                 className="relative rounded-3xl p-6 sm:p-8 overflow-hidden"
                 style={{
                   background:
-                    "linear-gradient(135deg, oklch(1 0 0 / 0.9) 0%, oklch(0.97 0.02 355 / 0.7) 100%)",
-                  border: "1px solid oklch(var(--blush) / 0.3)",
-                  boxShadow: "0 4px 24px -8px oklch(var(--rose-gold) / 0.15)",
+                    "linear-gradient(135deg, oklch(0.99 0.01 355 / 0.95) 0%, oklch(0.96 0.03 355 / 0.90) 100%)",
+                  border: "1px solid oklch(var(--blush) / 0.30)",
+                  boxShadow: "0 4px 24px -8px oklch(var(--blush) / 0.20)",
                 }}
               >
                 {/* Decorative quote mark */}
@@ -133,7 +133,7 @@ export function GuestbookSection() {
                     <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                       <h4
                         className="font-display font-semibold text-lg"
-                        style={{ color: "oklch(var(--wine))" }}
+                        style={{ color: "oklch(var(--deep-text))" }}
                       >
                         {wish.name}
                       </h4>
@@ -146,7 +146,7 @@ export function GuestbookSection() {
                     </div>
                     <p
                       className="text-base leading-relaxed"
-                      style={{ color: "oklch(var(--foreground) / 0.85)" }}
+                      style={{ color: "oklch(0.35 0.05 355)" }}
                     >
                       {wish.message}
                     </p>
@@ -177,13 +177,13 @@ export function GuestbookSection() {
         className="rounded-3xl p-6 sm:p-8"
         style={{
           background:
-            "linear-gradient(135deg, oklch(var(--petal) / 0.5) 0%, oklch(var(--ivory) / 0.8) 100%)",
-          border: "1px solid oklch(var(--blush) / 0.4)",
+            "linear-gradient(135deg, oklch(0.98 0.02 355 / 0.92) 0%, oklch(0.95 0.04 355 / 0.88) 100%)",
+          border: "1px solid oklch(var(--blush) / 0.35)",
         }}
       >
         <h3
           className="font-display text-xl font-semibold mb-6 flex items-center gap-2"
-          style={{ color: "oklch(var(--wine))" }}
+          style={{ color: "oklch(var(--deep-text))" }}
         >
           <Heart
             className="w-5 h-5 fill-current"
@@ -198,7 +198,7 @@ export function GuestbookSection() {
               <Label
                 htmlFor="guestbook-name"
                 className="text-sm font-medium"
-                style={{ color: "oklch(var(--wine))" }}
+                style={{ color: "oklch(var(--blush))" }}
               >
                 Your Name *
               </Label>
@@ -210,7 +210,11 @@ export function GuestbookSection() {
                 onChange={(e) =>
                   setNewWish((prev) => ({ ...prev, name: e.target.value }))
                 }
-                className="h-11 rounded-xl bg-white/70 border-blush/40"
+                className="h-11 rounded-xl border-blush/30"
+                style={{
+                  background: "oklch(0.98 0.01 355 / 0.90)",
+                  color: "oklch(var(--foreground))",
+                }}
                 aria-required="true"
                 aria-invalid={!!errors.name}
               />
@@ -232,7 +236,7 @@ export function GuestbookSection() {
             <Label
               htmlFor="guestbook-message"
               className="text-sm font-medium"
-              style={{ color: "oklch(var(--wine))" }}
+              style={{ color: "oklch(var(--blush))" }}
             >
               Your Message *
             </Label>
@@ -245,7 +249,11 @@ export function GuestbookSection() {
                 setNewWish((prev) => ({ ...prev, message: e.target.value }))
               }
               rows={3}
-              className="rounded-xl bg-white/70 border-blush/40 resize-none"
+              className="rounded-xl border-blush/30 resize-none"
+              style={{
+                background: "oklch(0.98 0.01 355 / 0.90)",
+                color: "oklch(var(--foreground))",
+              }}
               aria-required="true"
               aria-invalid={!!errors.message}
             />

@@ -77,7 +77,7 @@ export function RSVPForm() {
         </div>
         <h3
           className="font-display text-3xl font-semibold mb-3"
-          style={{ color: "oklch(var(--wine))" }}
+          style={{ color: "oklch(var(--deep-text))" }}
         >
           We can't wait to celebrate with you!
         </h3>
@@ -119,7 +119,7 @@ export function RSVPForm() {
             <Label
               htmlFor="rsvp-name"
               className="text-base font-medium"
-              style={{ color: "oklch(var(--wine))" }}
+              style={{ color: "oklch(var(--blush))" }}
             >
               Your Name *
             </Label>
@@ -131,7 +131,8 @@ export function RSVPForm() {
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
-              className="h-12 text-base rounded-xl border-blush/50 focus:border-wine focus:ring-wine/20 bg-white/80"
+              className="h-12 text-base rounded-xl border-blush/30 focus:border-blush focus:ring-blush/20"
+              style={{ background: "oklch(0.97 0.02 355 / 0.80)" }}
               aria-required="true"
               aria-invalid={!!errors.name}
               aria-describedby={errors.name ? "rsvp-name-error" : undefined}
@@ -152,7 +153,7 @@ export function RSVPForm() {
             <Label
               htmlFor="rsvp-email"
               className="text-base font-medium"
-              style={{ color: "oklch(var(--wine))" }}
+              style={{ color: "oklch(var(--blush))" }}
             >
               Email Address *
             </Label>
@@ -165,7 +166,8 @@ export function RSVPForm() {
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, email: e.target.value }))
               }
-              className="h-12 text-base rounded-xl border-blush/50 focus:border-wine focus:ring-wine/20 bg-white/80"
+              className="h-12 text-base rounded-xl border-blush/30 focus:border-blush focus:ring-blush/20"
+              style={{ background: "oklch(0.97 0.02 355 / 0.80)" }}
               aria-required="true"
               aria-invalid={!!errors.email}
               aria-describedby={errors.email ? "rsvp-email-error" : undefined}
@@ -187,7 +189,7 @@ export function RSVPForm() {
             <div className="space-y-2">
               <Label
                 className="text-base font-medium"
-                style={{ color: "oklch(var(--wine))" }}
+                style={{ color: "oklch(var(--blush))" }}
               >
                 Number of Guests *
               </Label>
@@ -199,7 +201,8 @@ export function RSVPForm() {
               >
                 <SelectTrigger
                   data-ocid="rsvp.guests.select"
-                  className="h-12 text-base rounded-xl border-blush/50 focus:border-wine bg-white/80"
+                  className="h-12 text-base rounded-xl border-blush/30 focus:border-blush"
+                  style={{ background: "oklch(0.97 0.02 355 / 0.80)" }}
                   aria-required="true"
                   aria-invalid={!!errors.guests}
                 >
@@ -227,7 +230,7 @@ export function RSVPForm() {
             <div className="space-y-2">
               <Label
                 className="text-base font-medium"
-                style={{ color: "oklch(var(--wine))" }}
+                style={{ color: "oklch(var(--blush))" }}
               >
                 Meal Preference *
               </Label>
@@ -239,7 +242,8 @@ export function RSVPForm() {
               >
                 <SelectTrigger
                   data-ocid="rsvp.meal.select"
-                  className="h-12 text-base rounded-xl border-blush/50 focus:border-wine bg-white/80"
+                  className="h-12 text-base rounded-xl border-blush/30 focus:border-blush"
+                  style={{ background: "oklch(0.97 0.02 355 / 0.80)" }}
                   aria-required="true"
                   aria-invalid={!!errors.meal}
                 >
@@ -269,7 +273,7 @@ export function RSVPForm() {
             <Label
               htmlFor="rsvp-message"
               className="text-base font-medium"
-              style={{ color: "oklch(var(--wine))" }}
+              style={{ color: "oklch(var(--blush))" }}
             >
               A Message for the Couple
               <span className="text-muted-foreground font-normal ml-1">
@@ -285,7 +289,8 @@ export function RSVPForm() {
                 setFormData((prev) => ({ ...prev, message: e.target.value }))
               }
               rows={4}
-              className="text-base rounded-xl border-blush/50 focus:border-wine focus:ring-wine/20 bg-white/80 resize-none"
+              className="text-base rounded-xl border-blush/30 focus:border-blush focus:ring-blush/20 resize-none"
+              style={{ background: "oklch(0.97 0.02 355 / 0.80)" }}
             />
           </div>
 

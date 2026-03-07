@@ -33,42 +33,43 @@
   :root {
     --radius: 1rem;
 
-    /* ── Engagement Palette ── */
-    /* blush pink, ivory cream, burgundy wine, rose gold, champagne gold */
+    /* ── Engagement Palette — Deep Midnight Premium ── */
+    /* dark navy base with warm rose, blush pinks & gold accents */
 
-    --background: 0.97 0.01 30; /* ivory cream */
-    --foreground: 0.2 0.04 15; /* deep charcoal */
-    --card: 0.99 0.005 30; /* near-white ivory */
-    --card-foreground: 0.2 0.04 15;
-    --popover: 0.99 0.005 30;
-    --popover-foreground: 0.2 0.04 15;
+    --background: 0.13 0.03 265; /* deep dark navy */
+    --foreground: 0.95 0.005 60; /* warm off-white text */
+    --card: 0.17 0.035 265; /* dark glass card */
+    --card-foreground: 0.93 0.005 60;
+    --popover: 0.15 0.03 265;
+    --popover-foreground: 0.93 0.005 60;
 
-    --primary: 0.42 0.1 5; /* deep burgundy/wine */
-    --primary-foreground: 0.97 0.01 30;
+    --primary: 0.5 0.14 355; /* deep rose pink */
+    --primary-foreground: 0.99 0.005 30;
 
-    --secondary: 0.88 0.06 355; /* soft blush pink */
-    --secondary-foreground: 0.3 0.06 5;
+    --secondary: 0.2 0.04 265; /* dark navy secondary */
+    --secondary-foreground: 0.85 0.01 60;
 
-    --muted: 0.94 0.03 20; /* warm muted cream */
-    --muted-foreground: 0.52 0.04 15;
+    --muted: 0.18 0.03 265; /* dark muted navy */
+    --muted-foreground: 0.65 0.04 355;
 
-    --accent: 0.78 0.1 65; /* champagne gold */
-    --accent-foreground: 0.2 0.04 15;
+    --accent: 0.75 0.1 65; /* champagne gold */
+    --accent-foreground: 0.22 0.04 15;
 
     --destructive: 0.52 0.2 25;
     --destructive-foreground: 0.97 0.01 30;
 
-    --border: 0.88 0.04 355; /* petal pink border */
-    --input: 0.9 0.03 355;
-    --ring: 0.42 0.1 5;
+    --border: 0.9 0.02 355; /* soft border */
+    --input: 0.95 0.01 355;
+    --ring: 0.55 0.12 355;
 
     /* custom engagement tokens */
-    --blush: 0.85 0.09 355; /* #f9a8d4 equiv */
-    --rose-gold: 0.75 0.1 15; /* rose gold */
+    --blush: 0.76 0.12 355; /* rich blush pink */
+    --rose-gold: 0.62 0.13 15; /* deep rose gold */
     --ivory: 0.97 0.01 80; /* ivory */
-    --wine: 0.35 0.12 5; /* deep wine */
-    --gold: 0.78 0.1 65; /* gold */
-    --petal: 0.92 0.04 355; /* lightest petal */
+    --wine: 0.44 0.14 355; /* deep rose wine */
+    --gold: 0.72 0.1 65; /* champagne gold */
+    --petal: 0.96 0.03 355; /* lightest petal */
+    --deep-text: 0.2 0.06 355; /* richest readable text */
 
     --chart-1: 0.65 0.15 355;
     --chart-2: 0.75 0.1 65;
@@ -280,31 +281,31 @@
     animation-delay: 1000ms;
   }
 
-  /* Petal background pattern */
+  /* Petal background pattern — dark midnight version */
   .bg-petal-pattern {
-    background-color: oklch(var(--petal));
+    background-color: oklch(0.13 0.03 265);
     background-image: radial-gradient(
         circle at 20% 20%,
-        oklch(var(--blush) / 0.3) 0%,
+        oklch(var(--blush) / 0.12) 0%,
         transparent 50%
       ),
       radial-gradient(
         circle at 80% 80%,
-        oklch(var(--rose-gold) / 0.2) 0%,
+        oklch(var(--wine) / 0.08) 0%,
         transparent 50%
       ),
       radial-gradient(
         circle at 50% 50%,
-        oklch(var(--ivory) / 0.5) 0%,
+        oklch(var(--gold) / 0.06) 0%,
         transparent 70%
       );
   }
 
-  /* Glass card */
+  /* Glass card — dark midnight glass */
   .glass-card {
-    background: oklch(1 0 0 / 0.85);
-    backdrop-filter: blur(12px);
-    border: 1px solid oklch(var(--blush) / 0.4);
+    background: oklch(0.18 0.04 265 / 0.7);
+    backdrop-filter: blur(16px);
+    border: 1px solid oklch(var(--blush) / 0.2);
   }
 
   /* Section divider */

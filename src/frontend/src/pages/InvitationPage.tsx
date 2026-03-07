@@ -47,7 +47,10 @@ function SectionHeading({ subtitle, title, description }: SectionHeadingProps) {
       >
         {subtitle}
       </p>
-      <h2 className="font-display mb-4" style={{ color: "oklch(var(--wine))" }}>
+      <h2
+        className="font-display mb-4"
+        style={{ color: "oklch(0.95 0.01 60)" }}
+      >
         {title}
       </h2>
       <div
@@ -76,7 +79,7 @@ function SectionHeading({ subtitle, title, description }: SectionHeadingProps) {
       {description && (
         <p
           className="text-lg max-w-xl mx-auto leading-relaxed"
-          style={{ color: "oklch(var(--muted-foreground))" }}
+          style={{ color: "oklch(0.72 0.04 355)" }}
         >
           {description}
         </p>
@@ -113,7 +116,7 @@ function HeroSection() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(180deg, oklch(0.10 0.04 355 / 0.55) 0%, oklch(0.08 0.05 5 / 0.70) 60%, oklch(0.06 0.04 5 / 0.85) 100%)",
+              "linear-gradient(180deg, oklch(0.13 0.03 265 / 0.35) 0%, oklch(0.13 0.03 265 / 0.55) 60%, oklch(0.13 0.03 265 / 0.72) 100%)",
           }}
         />
         {/* Vignette */}
@@ -121,7 +124,7 @@ function HeroSection() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at center, transparent 40%, oklch(0.06 0.04 5 / 0.5) 100%)",
+              "radial-gradient(ellipse at center, transparent 40%, oklch(0.08 0.02 265 / 0.5) 100%)",
           }}
         />
       </motion.div>
@@ -191,15 +194,16 @@ function HeroSection() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.5 }}
-          className="font-display font-semibold text-white mb-2"
+          className="font-display font-semibold mb-2"
           style={{
             fontSize: "clamp(3rem, 9vw, 7rem)",
             lineHeight: 1.0,
-            textShadow: "0 2px 20px oklch(0 0 0 / 0.3)",
+            color: "oklch(0.97 0.005 60)",
+            textShadow: "0 2px 12px oklch(0 0 0 / 0.4)",
           }}
         >
           Akshay &amp;{" "}
-          <span style={{ color: "oklch(var(--blush))" }}>Snehal</span>
+          <span style={{ color: "oklch(var(--wine))" }}>Snehal</span>
         </motion.h1>
 
         {/* Tagline */}
@@ -207,8 +211,11 @@ function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.8 }}
-          className="font-instrument text-xl sm:text-2xl md:text-3xl text-white/90 mb-8 italic"
-          style={{ textShadow: "0 1px 8px oklch(0 0 0 / 0.3)" }}
+          className="font-instrument text-xl sm:text-2xl md:text-3xl mb-8 italic"
+          style={{
+            color: "oklch(0.90 0.01 60 / 0.85)",
+            textShadow: "0 1px 6px oklch(0 0 0 / 0.3)",
+          }}
         >
           Gaikwad &amp; Rokade Family invites you! 💍
         </motion.p>
@@ -228,22 +235,32 @@ function HeroSection() {
               className="w-5 h-5"
               style={{ color: "oklch(var(--gold))" }}
             />
-            <span className="text-white font-medium text-base">
+            <span
+              className="font-medium text-base"
+              style={{ color: "oklch(0.95 0.005 60)" }}
+            >
               15 March 2026 · 7:00 PM
             </span>
           </div>
-          <div
-            className="flex items-center gap-3 px-6 py-3 rounded-2xl glass-card"
+          <a
+            href="https://maps.google.com/?q=GMK+Banquets+and+Lawns+Ravet,+Katraj-Dehu+Rd+Bypass,+Ravet,+Pimpri-Chinchwad,+Pune,+Maharashtra+412101"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-ocid="hero.venue.link"
+            className="flex items-center gap-3 px-6 py-3 rounded-2xl glass-card hover:opacity-80 transition-opacity"
             style={{ backdropFilter: "blur(16px)" }}
           >
             <MapPin
               className="w-5 h-5"
-              style={{ color: "oklch(var(--blush))" }}
+              style={{ color: "oklch(var(--wine))" }}
             />
-            <span className="text-white font-medium text-base">
+            <span
+              className="font-medium text-base"
+              style={{ color: "oklch(0.95 0.005 60)" }}
+            >
               GMK Banquets and Lawns, Ravet, Pune
             </span>
-          </div>
+          </a>
         </motion.div>
 
         {/* Scroll cue */}
@@ -258,14 +275,17 @@ function HeroSection() {
             transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
             className="flex flex-col items-center gap-2"
           >
-            <p className="text-white/60 text-xs uppercase tracking-[0.25em]">
+            <p
+              className="text-xs uppercase tracking-[0.25em]"
+              style={{ color: "oklch(var(--wine) / 0.60)" }}
+            >
               Scroll to explore
             </p>
             <div
               className="w-px h-8"
               style={{
                 background:
-                  "linear-gradient(180deg, oklch(1 0 0 / 0.5), transparent)",
+                  "linear-gradient(180deg, oklch(var(--wine) / 0.5), transparent)",
               }}
             />
           </motion.div>
@@ -285,15 +305,15 @@ function CountdownSection() {
       className="py-20 sm:py-28 relative overflow-hidden"
       style={{
         background:
-          "linear-gradient(180deg, oklch(var(--wine) / 0.95) 0%, oklch(0.28 0.10 5) 100%)",
+          "linear-gradient(180deg, oklch(0.88 0.09 355) 0%, oklch(0.84 0.11 355) 100%)",
       }}
     >
       {/* Decorative background elements */}
       <div
-        className="absolute inset-0 opacity-10"
+        className="absolute inset-0 opacity-25"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 20% 50%, oklch(var(--blush)) 0%, transparent 40%), radial-gradient(circle at 80% 50%, oklch(var(--gold)) 0%, transparent 40%)",
+            "radial-gradient(circle at 20% 50%, oklch(0.98 0.01 60) 0%, transparent 40%), radial-gradient(circle at 80% 50%, oklch(var(--gold) / 0.4) 0%, transparent 40%)",
         }}
       />
 
@@ -319,12 +339,22 @@ function CountdownSection() {
         >
           <p
             className="text-sm uppercase tracking-[0.3em] font-medium mb-3"
-            style={{ color: "oklch(var(--blush))" }}
+            style={{ color: "oklch(0.98 0.01 60)" }}
           >
             Time Until the Big Day
           </p>
-          <h2 className="text-white font-display mb-2">Counting Down</h2>
-          <p className="text-white/70 text-lg">15 March 2026 · 7:00 PM IST</p>
+          <h2
+            className="font-display mb-2"
+            style={{ color: "oklch(0.99 0.005 30)" }}
+          >
+            Counting Down
+          </h2>
+          <p
+            className="text-lg"
+            style={{ color: "oklch(0.97 0.01 60 / 0.80)" }}
+          >
+            15 March 2026 · 7:00 PM IST
+          </p>
         </motion.div>
 
         <motion.div
@@ -360,6 +390,7 @@ function EventDetailsSection() {
       label: "Venue",
       value: "GMK Banquets and Lawns",
       sub: "Katraj-Dehu Rd Bypass, Ravet, Pune",
+      link: "https://maps.google.com/?q=GMK+Banquets+and+Lawns+Ravet,+Katraj-Dehu+Rd+Bypass,+Ravet,+Pimpri-Chinchwad,+Pune,+Maharashtra+412101",
     },
     {
       icon: <Shirt className="w-7 h-7" />,
@@ -385,15 +416,18 @@ function EventDetailsSection() {
     <section
       data-ocid="event.details.section"
       className="py-20 sm:py-28 relative"
-      style={{ background: "oklch(var(--background))" }}
+      style={{
+        background:
+          "linear-gradient(160deg, oklch(0.13 0.03 265) 0%, oklch(0.16 0.04 265) 100%)",
+      }}
     >
       {/* Subtle background pattern */}
       <div
-        className="absolute inset-0 opacity-30"
+        className="absolute inset-0 opacity-60"
         style={{
           backgroundImage: `
-            radial-gradient(circle at 10% 80%, oklch(var(--blush) / 0.3) 0%, transparent 35%),
-            radial-gradient(circle at 90% 20%, oklch(var(--gold) / 0.2) 0%, transparent 35%)
+            radial-gradient(circle at 10% 80%, oklch(var(--blush) / 0.15) 0%, transparent 35%),
+            radial-gradient(circle at 90% 20%, oklch(var(--gold) / 0.12) 0%, transparent 35%)
           `,
         }}
       />
@@ -406,61 +440,94 @@ function EventDetailsSection() {
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {details.map((detail, idx) => (
-            <motion.div
-              key={detail.label}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-30px" }}
-              transition={{ duration: 0.5, delay: idx * 0.08 }}
-              className="group relative rounded-3xl p-6 overflow-hidden"
-              style={{
-                background:
-                  "linear-gradient(135deg, oklch(1 0 0 / 0.9) 0%, oklch(0.97 0.02 355 / 0.6) 100%)",
-                border: "1px solid oklch(var(--blush) / 0.3)",
-                boxShadow: "0 4px 20px -6px oklch(var(--rose-gold) / 0.12)",
-              }}
-            >
-              {/* Icon bubble */}
-              <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
-                style={{
-                  background:
-                    "linear-gradient(135deg, oklch(var(--blush) / 0.25), oklch(var(--rose-gold) / 0.15))",
-                  color: "oklch(var(--wine))",
-                }}
-              >
-                {detail.icon}
-              </div>
+          {details.map((detail, idx) => {
+            const cardContent = (
+              <>
+                {/* Icon bubble */}
+                <div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
+                  style={{
+                    background: "oklch(var(--wine) / 0.12)",
+                    color: "oklch(var(--wine))",
+                  }}
+                >
+                  {detail.icon}
+                </div>
 
-              <p
-                className="text-xs uppercase tracking-[0.2em] font-medium mb-1"
-                style={{ color: "oklch(var(--rose-gold))" }}
-              >
-                {detail.label}
-              </p>
-              <h3
-                className="font-display text-xl font-semibold mb-1"
-                style={{ color: "oklch(var(--wine))" }}
-              >
-                {detail.value}
-              </h3>
-              <p
-                className="text-sm"
-                style={{ color: "oklch(var(--muted-foreground))" }}
-              >
-                {detail.sub}
-              </p>
+                <p
+                  className="text-xs uppercase tracking-[0.2em] font-medium mb-1"
+                  style={{ color: "oklch(var(--rose-gold))" }}
+                >
+                  {detail.label}
+                </p>
+                <h3
+                  className="font-display text-xl font-semibold mb-1"
+                  style={{ color: "oklch(0.95 0.005 60)" }}
+                >
+                  {detail.value}
+                </h3>
+                <p
+                  className="text-sm"
+                  style={{ color: "oklch(0.70 0.03 355)" }}
+                >
+                  {detail.sub}
+                </p>
+                {"link" in detail && detail.link && (
+                  <p
+                    className="text-xs mt-2 font-medium"
+                    style={{ color: "oklch(var(--rose-gold))" }}
+                  >
+                    View on Maps ↗
+                  </p>
+                )}
 
-              {/* Corner decoration */}
-              <div
-                className="absolute top-3 right-4 text-lg opacity-15 animate-shimmer-gold"
-                aria-hidden="true"
+                {/* Corner decoration */}
+                <div
+                  className="absolute top-3 right-4 text-lg opacity-15 animate-shimmer-gold"
+                  aria-hidden="true"
+                >
+                  ✦
+                </div>
+              </>
+            );
+
+            const cardStyle = {
+              background:
+                "linear-gradient(135deg, oklch(0.18 0.04 265 / 0.9) 0%, oklch(0.20 0.05 265 / 0.85) 100%)",
+              border: "1px solid oklch(var(--blush) / 0.20)",
+              boxShadow: "0 4px 24px -6px oklch(0 0 0 / 0.4)",
+            };
+
+            return "link" in detail && detail.link ? (
+              <motion.a
+                key={detail.label}
+                href={detail.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-ocid="event.venue.card"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ duration: 0.5, delay: idx * 0.08 }}
+                className="group relative rounded-3xl p-6 overflow-hidden block hover:opacity-90 transition-opacity"
+                style={cardStyle}
               >
-                ✦
-              </div>
-            </motion.div>
-          ))}
+                {cardContent}
+              </motion.a>
+            ) : (
+              <motion.div
+                key={detail.label}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ duration: 0.5, delay: idx * 0.08 }}
+                className="group relative rounded-3xl p-6 overflow-hidden"
+                style={cardStyle}
+              >
+                {cardContent}
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Map hint */}
@@ -471,18 +538,22 @@ function EventDetailsSection() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="mt-10 text-center"
         >
-          <p
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium"
+          <a
+            href="https://maps.google.com/?q=GMK+Banquets+and+Lawns+Ravet,+Katraj-Dehu+Rd+Bypass,+Ravet,+Pimpri-Chinchwad,+Pune,+Maharashtra+412101"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-ocid="event.venue.link"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium hover:opacity-75 transition-opacity"
             style={{
-              background: "oklch(var(--wine) / 0.07)",
+              background: "oklch(var(--wine) / 0.10)",
               color: "oklch(var(--wine))",
-              border: "1px solid oklch(var(--wine) / 0.15)",
+              border: "1px solid oklch(var(--wine) / 0.25)",
             }}
           >
             <MapPin className="w-4 h-4" />
             GMK Banquets and Lawns Ravet, Katraj-Dehu Rd Bypass, Ravet,
-            Pimpri-Chinchwad, Pune 412101
-          </p>
+            Pimpri-Chinchwad, Pune 412101 ↗
+          </a>
         </motion.div>
       </div>
     </section>
@@ -497,17 +568,17 @@ function RSVPSection() {
       className="py-20 sm:py-28 relative overflow-hidden"
       style={{
         background:
-          "linear-gradient(160deg, oklch(var(--petal) / 0.6) 0%, oklch(var(--ivory)) 60%, oklch(var(--petal) / 0.4) 100%)",
+          "linear-gradient(160deg, oklch(0.13 0.03 265) 0%, oklch(0.15 0.03 265) 60%, oklch(0.13 0.03 265) 100%)",
       }}
     >
-      {/* Decorative elements */}
+      {/* Decorative elements — soft glows */}
       <div
-        className="absolute top-0 left-0 w-64 h-64 rounded-full opacity-20 -translate-x-1/2 -translate-y-1/2"
+        className="absolute top-0 left-0 w-64 h-64 rounded-full opacity-[0.18] -translate-x-1/2 -translate-y-1/2"
         style={{ background: "oklch(var(--blush))" }}
         aria-hidden="true"
       />
       <div
-        className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-15 translate-x-1/3 translate-y-1/3"
+        className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-[0.15] translate-x-1/3 translate-y-1/3"
         style={{ background: "oklch(var(--rose-gold))" }}
         aria-hidden="true"
       />
@@ -527,11 +598,11 @@ function RSVPSection() {
           transition={{ duration: 0.7 }}
           className="rounded-3xl p-6 sm:p-10 relative overflow-hidden"
           style={{
-            background: "oklch(1 0 0 / 0.92)",
+            background: "oklch(0.18 0.04 265 / 0.9)",
             backdropFilter: "blur(20px)",
-            border: "1px solid oklch(var(--blush) / 0.35)",
+            border: "1px solid oklch(var(--blush) / 0.25)",
             boxShadow:
-              "0 16px 60px -12px oklch(var(--rose-gold) / 0.18), 0 4px 16px -4px oklch(0 0 0 / 0.06)",
+              "0 16px 60px -12px oklch(0 0 0 / 0.5), 0 4px 16px -4px oklch(var(--wine) / 0.20)",
           }}
         >
           {/* Decorative flowers */}
@@ -561,7 +632,10 @@ function GuestbookSectionWrapper() {
     <section
       data-ocid="guestbook.section"
       className="py-20 sm:py-28"
-      style={{ background: "oklch(var(--background))" }}
+      style={{
+        background:
+          "linear-gradient(180deg, oklch(0.13 0.03 265) 0%, oklch(0.15 0.03 265) 100%)",
+      }}
     >
       <div className="container max-w-3xl mx-auto px-4">
         <SectionHeading
@@ -586,7 +660,7 @@ function FooterSection() {
       className="relative overflow-hidden py-16"
       style={{
         background:
-          "linear-gradient(160deg, oklch(var(--wine)) 0%, oklch(0.25 0.08 5) 100%)",
+          "linear-gradient(160deg, oklch(0.60 0.14 355) 0%, oklch(0.50 0.13 355) 100%)",
       }}
     >
       {/* Background decorations */}
