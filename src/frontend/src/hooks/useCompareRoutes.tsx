@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
-import type { Route } from '../backend';
+import { type ReactNode, createContext, useContext, useState } from "react";
+import type { Route } from "../backend";
 
 interface CompareContextType {
   selectedRoutes: Route[];
@@ -15,7 +15,10 @@ export function CompareProvider({ children }: { children: ReactNode }) {
   const [selectedRoutes, setSelectedRoutes] = useState<Route[]>([]);
 
   const addRoute = (route: Route) => {
-    if (selectedRoutes.length < 3 && !selectedRoutes.some((r) => r.id === route.id)) {
+    if (
+      selectedRoutes.length < 3 &&
+      !selectedRoutes.some((r) => r.id === route.id)
+    ) {
       setSelectedRoutes([...selectedRoutes, route]);
     }
   };
@@ -31,7 +34,9 @@ export function CompareProvider({ children }: { children: ReactNode }) {
   const canAddMore = selectedRoutes.length < 3;
 
   return (
-    <CompareContext.Provider value={{ selectedRoutes, addRoute, removeRoute, clearRoutes, canAddMore }}>
+    <CompareContext.Provider
+      value={{ selectedRoutes, addRoute, removeRoute, clearRoutes, canAddMore }}
+    >
       {children}
     </CompareContext.Provider>
   );
@@ -40,7 +45,7 @@ export function CompareProvider({ children }: { children: ReactNode }) {
 export function useCompareRoutes() {
   const context = useContext(CompareContext);
   if (!context) {
-    throw new Error('useCompareRoutes must be used within CompareProvider');
+    throw new Error("useCompareRoutes must be used within CompareProvider");
   }
   return context;
 }

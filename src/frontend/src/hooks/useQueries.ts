@@ -1,12 +1,19 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useActor } from './useActor';
-import type { Route, Booking, Review, TransportType, ShoppingItem, UserProfile } from '../backend';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type {
+  Booking,
+  Review,
+  Route,
+  ShoppingItem,
+  TransportType,
+  UserProfile,
+} from "../backend";
+import { useActor } from "./useActor";
 
 export function useGetAllRoutes() {
   const { actor, isFetching } = useActor();
 
   return useQuery<Route[]>({
-    queryKey: ['routes'],
+    queryKey: ["routes"],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getAllRoutes();
@@ -19,7 +26,7 @@ export function useGetRoutesForType(transportType: TransportType | null) {
   const { actor, isFetching } = useActor();
 
   return useQuery<Route[]>({
-    queryKey: ['routes', transportType],
+    queryKey: ["routes", transportType],
     queryFn: async () => {
       if (!actor) return [];
       if (!transportType) return actor.getAllRoutes();
@@ -29,11 +36,14 @@ export function useGetRoutesForType(transportType: TransportType | null) {
   });
 }
 
-export function useSearchRoutesByTimeRange(fromTime: bigint | null, toTime: bigint | null) {
+export function useSearchRoutesByTimeRange(
+  fromTime: bigint | null,
+  toTime: bigint | null,
+) {
   const { actor, isFetching } = useActor();
 
   return useQuery<Route[]>({
-    queryKey: ['routes', 'timeRange', fromTime?.toString(), toTime?.toString()],
+    queryKey: ["routes", "timeRange", fromTime?.toString(), toTime?.toString()],
     queryFn: async () => {
       if (!actor || !fromTime || !toTime) return [];
       return actor.searchRoutesByTimeRange(fromTime, toTime);
@@ -46,10 +56,10 @@ export function useGetUserBookings(userPrincipal: string | undefined) {
   const { actor, isFetching } = useActor();
 
   return useQuery<Booking[]>({
-    queryKey: ['bookings', userPrincipal],
+    queryKey: ["bookings", userPrincipal],
     queryFn: async () => {
       if (!actor || !userPrincipal) return [];
-      const { Principal } = await import('@dfinity/principal');
+      const { Principal } = await import("@dfinity/principal");
       return actor.getUserBookings(Principal.fromText(userPrincipal));
     },
     enabled: !!actor && !isFetching && !!userPrincipal,
@@ -60,7 +70,7 @@ export function useGetBooking(bookingId: string | undefined) {
   const { actor, isFetching } = useActor();
 
   return useQuery<Booking | null>({
-    queryKey: ['booking', bookingId],
+    queryKey: ["booking", bookingId],
     queryFn: async () => {
       if (!actor || !bookingId) return null;
       return actor.getBooking(bookingId);
@@ -75,11 +85,11 @@ export function useCreateBooking() {
 
   return useMutation({
     mutationFn: async (booking: Booking) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       return actor.createBooking(booking);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
     },
   });
 }
@@ -90,12 +100,12 @@ export function useUpdateBooking() {
 
   return useMutation({
     mutationFn: async (booking: Booking) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       return actor.updateBooking(booking);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['bookings'] });
-      queryClient.invalidateQueries({ queryKey: ['booking'] });
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+      queryClient.invalidateQueries({ queryKey: ["booking"] });
     },
   });
 }
@@ -104,7 +114,7 @@ export function useGetReviewsForRoute(routeId: string | undefined) {
   const { actor, isFetching } = useActor();
 
   return useQuery<Review[]>({
-    queryKey: ['reviews', routeId],
+    queryKey: ["reviews", routeId],
     queryFn: async () => {
       if (!actor || !routeId) return [];
       return actor.getReviewsForRoute(routeId);
@@ -118,12 +128,16 @@ export function useAddReview() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ bookingId, rating, reviewText }: { bookingId: string; rating: number; reviewText: string }) => {
-      if (!actor) throw new Error('Actor not available');
+    mutationFn: async ({
+      bookingId,
+      rating,
+      reviewText,
+    }: { bookingId: string; rating: number; reviewText: string }) => {
+      if (!actor) throw new Error("Actor not available");
       return actor.addReview(bookingId, BigInt(rating), reviewText);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['reviews'] });
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
     },
   });
 }
@@ -134,11 +148,11 @@ export function useSaveCallerUserProfile() {
 
   return useMutation({
     mutationFn: async (profile: UserProfile) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       return actor.saveCallerUserProfile(profile);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
+      queryClient.invalidateQueries({ queryKey: ["currentUserProfile"] });
     },
   });
 }
@@ -147,7 +161,7 @@ export function useIsStripeConfigured() {
   const { actor, isFetching } = useActor();
 
   return useQuery<boolean>({
-    queryKey: ['stripeConfigured'],
+    queryKey: ["stripeConfigured"],
     queryFn: async () => {
       if (!actor) return false;
       return actor.isStripeConfigured();
@@ -161,12 +175,15 @@ export function useSetStripeConfiguration() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (config: { secretKey: string; allowedCountries: string[] }) => {
-      if (!actor) throw new Error('Actor not available');
+    mutationFn: async (config: {
+      secretKey: string;
+      allowedCountries: string[];
+    }) => {
+      if (!actor) throw new Error("Actor not available");
       return actor.setStripeConfiguration(config);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['stripeConfigured'] });
+      queryClient.invalidateQueries({ queryKey: ["stripeConfigured"] });
     },
   });
 }
@@ -181,14 +198,18 @@ export function useCreateCheckoutSession() {
 
   return useMutation({
     mutationFn: async (items: ShoppingItem[]): Promise<CheckoutSession> => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       const baseUrl = `${window.location.protocol}//${window.location.host}`;
       const successUrl = `${baseUrl}/payment-success`;
       const cancelUrl = `${baseUrl}/payment-failure`;
-      const result = await actor.createCheckoutSession(items, successUrl, cancelUrl);
+      const result = await actor.createCheckoutSession(
+        items,
+        successUrl,
+        cancelUrl,
+      );
       const session = JSON.parse(result) as CheckoutSession;
       if (!session?.url) {
-        throw new Error('Stripe session missing url');
+        throw new Error("Stripe session missing url");
       }
       return session;
     },
@@ -199,7 +220,7 @@ export function useIsCallerAdmin() {
   const { actor, isFetching } = useActor();
 
   return useQuery<boolean>({
-    queryKey: ['isAdmin'],
+    queryKey: ["isAdmin"],
     queryFn: async () => {
       if (!actor) return false;
       return actor.isCallerAdmin();
@@ -229,7 +250,7 @@ export function useAddRouteWithRateBreakdown() {
 
   return useMutation({
     mutationFn: async (params: AddRouteWithRateBreakdownParams) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       return actor.addRouteWithRateBreakdown(
         params.transportType,
         params.id,
@@ -242,11 +263,11 @@ export function useAddRouteWithRateBreakdown() {
         params.schedule,
         params.baseFare,
         params.taxes,
-        params.serviceFees
+        params.serviceFees,
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['routes'] });
+      queryClient.invalidateQueries({ queryKey: ["routes"] });
     },
   });
 }
@@ -257,11 +278,11 @@ export function useUpdateRoute() {
 
   return useMutation({
     mutationFn: async (route: Route) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       return actor.updateRoute(route);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['routes'] });
+      queryClient.invalidateQueries({ queryKey: ["routes"] });
     },
   });
 }
@@ -272,11 +293,11 @@ export function useDeleteRoute() {
 
   return useMutation({
     mutationFn: async (routeId: string) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       return actor.deleteRoute(routeId);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['routes'] });
+      queryClient.invalidateQueries({ queryKey: ["routes"] });
     },
   });
 }

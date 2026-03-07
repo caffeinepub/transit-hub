@@ -2,91 +2,329 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Fraunces (display/headings) ── */
+@font-face {
+  font-family: "Fraunces";
+  src: url("/assets/fonts/Fraunces.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Instrument Serif (display/subheadings) ── */
+@font-face {
+  font-family: "Instrument Serif";
+  src: url("/assets/fonts/InstrumentSerif-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Crimson Pro (body) ── */
+@font-face {
+  font-family: "Crimson Pro";
+  src: url("/assets/fonts/CrimsonPro.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
-    :root {
-        --radius: 0.75rem;
-        --background: 0.98 0 0;
-        --foreground: 0.15 0 0;
-        --card: 1 0 0;
-        --card-foreground: 0.15 0 0;
-        --popover: 1 0 0;
-        --popover-foreground: 0.15 0 0;
-        --primary: 0.55 0.18 35;
-        --primary-foreground: 0.98 0 0;
-        --secondary: 0.92 0.08 85;
-        --secondary-foreground: 0.15 0 0;
-        --muted: 0.95 0.02 85;
-        --muted-foreground: 0.50 0.02 85;
-        --accent: 0.88 0.12 65;
-        --accent-foreground: 0.15 0 0;
-        --destructive: 0.58 0.22 25;
-        --destructive-foreground: 0.98 0 0;
-        --border: 0.90 0.02 85;
-        --input: 0.90 0.02 85;
-        --ring: 0.55 0.18 35;
-        --chart-1: 0.65 0.20 45;
-        --chart-2: 0.70 0.18 120;
-        --chart-3: 0.60 0.15 25;
-        --chart-4: 0.75 0.16 85;
-        --chart-5: 0.68 0.19 60;
-    }
+  :root {
+    --radius: 1rem;
 
-    .dark {
-        --background: 0.12 0.02 35;
-        --foreground: 0.95 0.02 85;
-        --card: 0.18 0.03 35;
-        --card-foreground: 0.95 0.02 85;
-        --popover: 0.15 0.03 35;
-        --popover-foreground: 0.95 0.02 85;
-        --primary: 0.70 0.20 45;
-        --primary-foreground: 0.12 0.02 35;
-        --secondary: 0.25 0.05 35;
-        --secondary-foreground: 0.95 0.02 85;
-        --muted: 0.22 0.04 35;
-        --muted-foreground: 0.65 0.04 85;
-        --accent: 0.30 0.08 45;
-        --accent-foreground: 0.95 0.02 85;
-        --destructive: 0.62 0.24 25;
-        --destructive-foreground: 0.95 0.02 85;
-        --border: 0.25 0.04 35;
-        --input: 0.25 0.04 35;
-        --ring: 0.70 0.20 45;
-        --chart-1: 0.68 0.22 45;
-        --chart-2: 0.72 0.20 120;
-        --chart-3: 0.62 0.17 25;
-        --chart-4: 0.77 0.18 85;
-        --chart-5: 0.70 0.21 60;
-    }
+    /* ── Engagement Palette ── */
+    /* blush pink, ivory cream, burgundy wine, rose gold, champagne gold */
 
-    * {
-        @apply border-border;
-    }
-    
-    body {
-        @apply bg-background text-foreground;
-        font-feature-settings: "rlig" 1, "calt" 1;
-    }
+    --background: 0.97 0.01 30; /* ivory cream */
+    --foreground: 0.2 0.04 15; /* deep charcoal */
+    --card: 0.99 0.005 30; /* near-white ivory */
+    --card-foreground: 0.2 0.04 15;
+    --popover: 0.99 0.005 30;
+    --popover-foreground: 0.2 0.04 15;
 
-    h1, h2, h3, h4, h5, h6 {
-        @apply font-bold tracking-tight;
-    }
+    --primary: 0.42 0.1 5; /* deep burgundy/wine */
+    --primary-foreground: 0.97 0.01 30;
 
-    h1 {
-        @apply text-4xl;
-    }
+    --secondary: 0.88 0.06 355; /* soft blush pink */
+    --secondary-foreground: 0.3 0.06 5;
 
-    h2 {
-        @apply text-3xl;
-    }
+    --muted: 0.94 0.03 20; /* warm muted cream */
+    --muted-foreground: 0.52 0.04 15;
 
-    h3 {
-        @apply text-2xl;
-    }
+    --accent: 0.78 0.1 65; /* champagne gold */
+    --accent-foreground: 0.2 0.04 15;
+
+    --destructive: 0.52 0.2 25;
+    --destructive-foreground: 0.97 0.01 30;
+
+    --border: 0.88 0.04 355; /* petal pink border */
+    --input: 0.9 0.03 355;
+    --ring: 0.42 0.1 5;
+
+    /* custom engagement tokens */
+    --blush: 0.85 0.09 355; /* #f9a8d4 equiv */
+    --rose-gold: 0.75 0.1 15; /* rose gold */
+    --ivory: 0.97 0.01 80; /* ivory */
+    --wine: 0.35 0.12 5; /* deep wine */
+    --gold: 0.78 0.1 65; /* gold */
+    --petal: 0.92 0.04 355; /* lightest petal */
+
+    --chart-1: 0.65 0.15 355;
+    --chart-2: 0.75 0.1 65;
+    --chart-3: 0.55 0.12 5;
+    --chart-4: 0.85 0.08 30;
+    --chart-5: 0.7 0.1 20;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Crimson Pro", serif;
+    font-size: 18px;
+    line-height: 1.7;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Fraunces", serif;
+    font-feature-settings: "swsh" 1;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 600;
+  }
+  h2 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 500;
+  }
+  h3 {
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 500;
+  }
 }
 
 @layer utilities {
-    .touch-target {
-        min-width: 44px;
-        min-height: 44px;
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .font-display {
+    font-family: "Fraunces", serif;
+  }
+
+  .font-serif-display {
+    font-family: "Instrument Serif", serif;
+  }
+
+  .font-body {
+    font-family: "Crimson Pro", serif;
+  }
+
+  /* Romantic text gradient */
+  .text-gradient-romantic {
+    background: linear-gradient(
+      135deg,
+      oklch(var(--wine)) 0%,
+      oklch(var(--rose-gold)) 50%,
+      oklch(var(--gold)) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(
+      135deg,
+      oklch(var(--gold)) 0%,
+      oklch(0.88 0.08 75) 50%,
+      oklch(var(--gold)) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Decorative divider */
+  .divider-ornament::before,
+  .divider-ornament::after {
+    content: "✦";
+    color: oklch(var(--gold));
+    margin: 0 1rem;
+  }
+
+  /* Floating hearts animation */
+  @keyframes float-heart {
+    0% {
+      transform: translateY(0) rotate(0deg);
+      opacity: 0.7;
     }
+    50% {
+      transform: translateY(-30px) rotate(15deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-60px) rotate(-10deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes float-gentle {
+    0%,
+    100% {
+      transform: translateY(0px) rotate(-5deg);
+    }
+    50% {
+      transform: translateY(-12px) rotate(5deg);
+    }
+  }
+
+  @keyframes shimmer-gold {
+    0%,
+    100% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 oklch(var(--blush) / 0.6);
+    }
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 15px oklch(var(--blush) / 0);
+    }
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 oklch(var(--blush) / 0);
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .animate-float-gentle {
+    animation: float-gentle 4s ease-in-out infinite;
+  }
+
+  .animate-shimmer-gold {
+    animation: shimmer-gold 2s ease-in-out infinite;
+  }
+
+  .animate-pulse-ring {
+    animation: pulse-ring 2.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+  }
+
+  .animate-fade-up {
+    animation: fade-up 0.8s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.6s ease-out forwards;
+  }
+
+  /* Delay utilities */
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+  .animation-delay-600 {
+    animation-delay: 600ms;
+  }
+  .animation-delay-800 {
+    animation-delay: 800ms;
+  }
+  .animation-delay-1000 {
+    animation-delay: 1000ms;
+  }
+
+  /* Petal background pattern */
+  .bg-petal-pattern {
+    background-color: oklch(var(--petal));
+    background-image: radial-gradient(
+        circle at 20% 20%,
+        oklch(var(--blush) / 0.3) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 80%,
+        oklch(var(--rose-gold) / 0.2) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 50% 50%,
+        oklch(var(--ivory) / 0.5) 0%,
+        transparent 70%
+      );
+  }
+
+  /* Glass card */
+  .glass-card {
+    background: oklch(1 0 0 / 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid oklch(var(--blush) / 0.4);
+  }
+
+  /* Section divider */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      oklch(var(--rose-gold)),
+      transparent
+    );
+  }
 }

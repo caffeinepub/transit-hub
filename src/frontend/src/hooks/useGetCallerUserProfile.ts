@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { useActor } from './useActor';
+import { useQuery } from "@tanstack/react-query";
+import { useActor } from "./useActor";
 
 export interface UserProfile {
   firstName: string;
@@ -12,9 +12,9 @@ export function useGetCallerUserProfile() {
   const { actor, isFetching: actorFetching } = useActor();
 
   const query = useQuery<UserProfile | null>({
-    queryKey: ['currentUserProfile'],
+    queryKey: ["currentUserProfile"],
     queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       // Backend doesn't have getCallerUserProfile yet, return null for now
       // This will trigger profile setup modal
       return null;
