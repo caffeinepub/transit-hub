@@ -3,6 +3,7 @@ export const dashboardData = {
     totalBookings: 15541,
     totalRevenue: 24218319,
     totalProfit: 2514590,
+    profitMargin: 10.4,
     cancellationRate: 3.6,
     cancelledCount: 558,
     activeCount: 14983,
@@ -78,6 +79,8 @@ export const flightData = {
   kpis: {
     totalBookings: 8420,
     totalRevenue: 187650000,
+    totalProfit: 15012000,
+    profitMargin: 8.0,
     cancellationRate: 4.2,
     cancelledCount: 354,
     avgFare: 22286,
@@ -130,6 +133,8 @@ export const busData = {
   kpis: {
     totalBookings: 12380,
     totalRevenue: 62145000,
+    totalProfit: 3728700,
+    profitMargin: 6.0,
     cancellationRate: 5.8,
     cancelledCount: 718,
     avgFare: 5020,
@@ -184,6 +189,8 @@ export const hotelData = {
   kpis: {
     totalBookings: 5840,
     totalRevenue: 89320000,
+    totalProfit: 10718400,
+    profitMargin: 12.0,
     cancellationRate: 6.4,
     cancelledCount: 374,
     avgNightlyRate: 15294,
