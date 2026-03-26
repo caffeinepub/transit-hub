@@ -1,33 +1,27 @@
-# Train Booking Dashboard
+# Travel Services Analytics Dashboard
 
 ## Current State
-Project has an existing engagement invitation site. A new dashboard is being built based on uploaded CSV data.
+A Train Booking Analytics Dashboard exists with KPI cards, monthly trend chart, top clients, coach types, quota used, booking status, top routes, and billing status. Navigation sidebar has 4 tabs (Overview, Clients, Routes, Finance) but they don't switch content. Only train data exists.
 
 ## Requested Changes (Diff)
 
 ### Add
-- Full-screen analytics dashboard for Train Booking Service data
-- KPI cards: Total Bookings, Total Revenue, Total Profit, Cancellation Rate
-- Monthly bookings & revenue trend line chart
-- Top 10 clients bar chart
-- Coach type distribution donut chart
-- Booking status pie chart (Invoice Created vs Cancelled)
-- Quota used breakdown (General, Tatkal, Premium Tatkal)
-- Top routes table
-- Interactive filters: by client, booking status, date range
-- Bill status breakdown
+- Flight service dashboard tab with relevant KPIs: total flights booked, revenue, cancellation rate, avg fare, popular airlines, top routes (city pairs), booking class distribution, monthly trend
+- Bus service dashboard tab: total trips, revenue, popular operators, top routes, seat types, monthly trend
+- Hotel service dashboard tab: total nights booked, revenue, avg nightly rate, popular hotels/cities, room types, monthly trend
+- Service selector at top level (Train / Flight / Bus / Hotel) as tabs
+- Realistic mock data for flight, bus, and hotel in dashboardData.ts
 
 ### Modify
-- App.tsx to render dashboard instead of engagement invitation
+- Sidebar nav buttons (Overview, Clients, Routes, Finance) to actually switch content sections within each service tab
+- Dashboard title and branding to reflect "Travel Services Dashboard" covering all 4 service types
+- Each service gets its own color accent (Train=indigo, Flight=sky, Bus=emerald, Hotel=amber)
 
 ### Remove
-- Nothing from existing invitation (this is a separate project context)
+- Nothing removed
 
 ## Implementation Plan
-1. Embed pre-processed CSV data as static JSON in the frontend
-2. Build dashboard layout with sidebar nav and main content area
-3. Use Recharts for all charts
-4. KPI summary cards at the top
-5. Charts grid below
-6. Routes table with pagination
-7. Filter controls
+1. Extend dashboardData.ts with flightData, busData, hotelData objects with monthly trends, top routes, operators/airlines, class distributions, KPIs
+2. Refactor DashboardPage.tsx to have a top service tab bar (Train/Flight/Bus/Hotel)
+3. For each service, render relevant KPIs and charts based on activeNav (Overview/Clients/Routes/Finance)
+4. Wire all sidebar nav buttons to filter content sections
