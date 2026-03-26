@@ -56,13 +56,6 @@ export default {
           4: 'oklch(var(--chart-4))',
           5: 'oklch(var(--chart-5))'
         },
-        /* Engagement custom colors */
-        blush: 'oklch(var(--blush))',
-        'rose-gold': 'oklch(var(--rose-gold))',
-        ivory: 'oklch(var(--ivory))',
-        wine: 'oklch(var(--wine))',
-        gold: 'oklch(var(--gold))',
-        petal: 'oklch(var(--petal))',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -73,18 +66,14 @@ export default {
         '3xl': '2rem',
       },
       fontFamily: {
-        sans: ['Crimson Pro', 'Georgia', 'serif'],
-        serif: ['Fraunces', 'Georgia', 'serif'],
-        display: ['Fraunces', 'Georgia', 'serif'],
-        'instrument': ['Instrument Serif', 'Georgia', 'serif'],
+        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        display: ['Bricolage Grotesque', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       boxShadow: {
         xs: '0 1px 2px 0 rgba(0,0,0,0.05)',
-        soft: '0 4px 16px -4px rgba(180, 80, 80, 0.12)',
-        romantic: '0 8px 32px -8px rgba(180, 60, 60, 0.18), 0 2px 8px -2px rgba(180, 60, 60, 0.08)',
-        'gold-glow': '0 0 24px -4px rgba(180, 140, 40, 0.30)',
-        'petal-glow': '0 8px 40px -8px rgba(200, 80, 100, 0.20)',
-        card: '0 2px 24px -4px rgba(180, 80, 80, 0.10), 0 1px 4px -1px rgba(0,0,0,0.04)',
+        soft: '0 4px 16px -4px rgba(99,102,241,0.10)',
+        card: '0 2px 12px -4px rgba(0,0,0,0.08)',
       },
       keyframes: {
         'accordion-down': {
@@ -95,28 +84,10 @@ export default {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' }
         },
-        'fade-in': {
-          from: { opacity: '0', transform: 'translateY(10px)' },
-          to: { opacity: '1', transform: 'translateY(0)' }
-        },
-        'heart-float': {
-          '0%': { transform: 'translateY(0) scale(1)', opacity: '0.8' },
-          '50%': { transform: 'translateY(-20px) scale(1.1)', opacity: '1' },
-          '100%': { transform: 'translateY(-40px) scale(0.9)', opacity: '0' },
-        },
-        'drift': {
-          '0%': { transform: 'translateX(0) translateY(0)' },
-          '33%': { transform: 'translateX(8px) translateY(-8px)' },
-          '66%': { transform: 'translateX(-6px) translateY(-4px)' },
-          '100%': { transform: 'translateX(0) translateY(0)' },
-        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'fade-in': 'fade-in 0.3s ease-out',
-        'heart-float': 'heart-float 3s ease-in-out infinite',
-        'drift': 'drift 6s ease-in-out infinite',
       }
     }
   },

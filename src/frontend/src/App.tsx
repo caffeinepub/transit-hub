@@ -1,6 +1,6 @@
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "next-themes";
-import InvitationPage from "./pages/InvitationPage";
+import DashboardPage from "./pages/DashboardPage";
 
 export default function App() {
   return (
@@ -10,7 +10,7 @@ export default function App() {
       enableSystem={false}
       forcedTheme="light"
     >
-      <InvitationPage />
+      <DashboardPage />
       <Toaster />
     </ThemeProvider>
   );

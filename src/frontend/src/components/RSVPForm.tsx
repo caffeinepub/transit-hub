@@ -15,7 +15,6 @@ import { useState } from "react";
 
 interface RSVPData {
   name: string;
-  email: string;
   guests: string;
   meal: string;
   message: string;
@@ -24,7 +23,6 @@ interface RSVPData {
 export function RSVPForm() {
   const [formData, setFormData] = useState<RSVPData>({
     name: "",
-    email: "",
     guests: "",
     meal: "",
     message: "",
@@ -36,11 +34,6 @@ export function RSVPForm() {
   function validate(): boolean {
     const newErrors: Partial<RSVPData> = {};
     if (!formData.name.trim()) newErrors.name = "Please enter your name";
-    if (!formData.email.trim()) {
-      newErrors.email = "Please enter your email";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
-    }
     if (!formData.guests) newErrors.guests = "Please select number of guests";
     if (!formData.meal) newErrors.meal = "Please select your meal preference";
     setErrors(newErrors);
@@ -144,41 +137,6 @@ export function RSVPForm() {
                 style={{ color: "oklch(var(--destructive))" }}
               >
                 {errors.name}
-              </p>
-            )}
-          </div>
-
-          {/* Email */}
-          <div className="space-y-2">
-            <Label
-              htmlFor="rsvp-email"
-              className="text-base font-medium"
-              style={{ color: "oklch(var(--blush))" }}
-            >
-              Email Address *
-            </Label>
-            <Input
-              id="rsvp-email"
-              data-ocid="rsvp.email.input"
-              type="email"
-              placeholder="your@email.com"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, email: e.target.value }))
-              }
-              className="h-12 text-base rounded-xl border-blush/30 focus:border-blush focus:ring-blush/20"
-              style={{ background: "oklch(0.97 0.02 355 / 0.80)" }}
-              aria-required="true"
-              aria-invalid={!!errors.email}
-              aria-describedby={errors.email ? "rsvp-email-error" : undefined}
-            />
-            {errors.email && (
-              <p
-                id="rsvp-email-error"
-                className="text-sm"
-                style={{ color: "oklch(var(--destructive))" }}
-              >
-                {errors.email}
               </p>
             )}
           </div>
@@ -303,9 +261,9 @@ export function RSVPForm() {
             className="w-full h-14 text-lg font-semibold rounded-2xl gap-3 transition-all duration-300"
             style={{
               background:
-                "linear-gradient(135deg, oklch(var(--wine)) 0%, oklch(var(--rose-gold)) 100%)",
+                "linear-gradient(135deg, oklch(0.62 0.18 10) 0%, oklch(0.52 0.20 355) 100%)",
               color: "white",
-              boxShadow: "0 8px 32px -4px oklch(var(--wine) / 0.35)",
+              boxShadow: "0 8px 32px -4px oklch(0.55 0.18 10 / 0.45)",
             }}
           >
             {isSubmitting ? (

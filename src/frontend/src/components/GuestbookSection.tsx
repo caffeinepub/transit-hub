@@ -274,8 +274,9 @@ export function GuestbookSection() {
             className="gap-2 rounded-xl px-6 h-11 font-medium"
             style={{
               background:
-                "linear-gradient(135deg, oklch(var(--wine)), oklch(var(--rose-gold)))",
+                "linear-gradient(135deg, oklch(0.72 0.18 20) 0%, oklch(0.60 0.20 350) 100%)",
               color: "white",
+              boxShadow: "0 4px 18px -4px oklch(0.65 0.18 10 / 0.45)",
             }}
           >
             {isSubmitting ? (
