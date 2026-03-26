@@ -1,27 +1,36 @@
-# Travel Services Analytics Dashboard
+# Train Booking Dashboard
 
 ## Current State
-A Train Booking Analytics Dashboard exists with KPI cards, monthly trend chart, top clients, coach types, quota used, booking status, top routes, and billing status. Navigation sidebar has 4 tabs (Overview, Clients, Routes, Finance) but they don't switch content. Only train data exists.
+Interactive analytics dashboard with sidebar navigation (Train/Flight/Bus/Hotel tabs + Overview/Clients/Routes/Finance nav), KPI cards, recharts charts (bar, area, pie, composed), and Export to Excel feature. Uses a dark slate sidebar with colored accents per service.
 
 ## Requested Changes (Diff)
 
 ### Add
-- Flight service dashboard tab with relevant KPIs: total flights booked, revenue, cancellation rate, avg fare, popular airlines, top routes (city pairs), booking class distribution, monthly trend
-- Bus service dashboard tab: total trips, revenue, popular operators, top routes, seat types, monthly trend
-- Hotel service dashboard tab: total nights booked, revenue, avg nightly rate, popular hotels/cities, room types, monthly trend
-- Service selector at top level (Train / Flight / Bus / Hotel) as tabs
-- Realistic mock data for flight, bus, and hotel in dashboardData.ts
+- Excel-inspired UI styling: ribbon-like toolbar at top, Excel green (#217346) as primary accent, grid/cell-like card layouts, spreadsheet-style table borders, Excel-like button styles (flat, bordered, with icons)
+- Excel-style ribbon toolbar with action buttons (Export, Refresh, Filter, Print-style buttons)
+- Excel-style tab strip for service switching (looks like Excel sheet tabs at the bottom or top)
+- Grid-lined background/panel for charts (mimicking Excel chart area styling)
+- Spreadsheet-like data tables with alternating rows, borders, header row styling matching Excel
+- Excel-style KPI cards with cell borders and header labels
+- Excel formula-bar-like display for key metrics
 
 ### Modify
-- Sidebar nav buttons (Overview, Clients, Routes, Finance) to actually switch content sections within each service tab
-- Dashboard title and branding to reflect "Travel Services Dashboard" covering all 4 service types
-- Each service gets its own color accent (Train=indigo, Flight=sky, Bus=emerald, Hotel=amber)
+- Overall color theme: shift to Excel green (#217346) primary, white background, gray grid lines
+- Sidebar: replace dark slate with Excel-style white/light gray panel with green accents
+- Buttons: flat Excel-style with borders, hover states matching Excel ribbon buttons
+- Charts: add Excel-style chart borders, gridlines, and labels
+- Navigation: Excel sheet-tab style for service switching
+- KPI cards: Excel cell-style with visible borders and header labels
 
 ### Remove
-- Nothing removed
+- Dark slate sidebar background (replace with light Excel-style)
 
 ## Implementation Plan
-1. Extend dashboardData.ts with flightData, busData, hotelData objects with monthly trends, top routes, operators/airlines, class distributions, KPIs
-2. Refactor DashboardPage.tsx to have a top service tab bar (Train/Flight/Bus/Hotel)
-3. For each service, render relevant KPIs and charts based on activeNav (Overview/Clients/Routes/Finance)
-4. Wire all sidebar nav buttons to filter content sections
+1. Restyle DashboardPage.tsx entirely with Excel UI theme
+2. Implement ribbon toolbar at top with Export and action buttons in Excel style
+3. Replace service tabs with Excel sheet-tab style strip
+4. Restyle sidebar/nav with Excel light theme and green accents
+5. Restyle KPI cards as Excel cells with borders
+6. Add Excel-style gridlines and borders to chart containers
+7. Restyle data tables to match Excel spreadsheet look
+8. Keep all existing functionality (charts, export, navigation) intact
