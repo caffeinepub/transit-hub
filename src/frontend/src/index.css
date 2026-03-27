@@ -2,80 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Fraunces (display/headings) ── */
+/* ── Plus Jakarta Sans (body) ── */
 @font-face {
-  font-family: "Fraunces";
-  src: url("/assets/fonts/Fraunces.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "Plus Jakarta Sans";
+  src: url("/assets/fonts/PlusJakartaSans.woff2") format("woff2");
+  font-weight: 200 800;
   font-style: normal;
   font-display: swap;
 }
 
-/* ── Instrument Serif (display/subheadings) ── */
+/* ── Bricolage Grotesque (display) ── */
 @font-face {
-  font-family: "Instrument Serif";
-  src: url("/assets/fonts/InstrumentSerif-Regular.woff2") format("woff2");
-  font-weight: 400;
+  font-family: "Bricolage Grotesque";
+  src: url("/assets/fonts/BricolageGrotesque.woff2") format("woff2");
+  font-weight: 200 800;
   font-style: normal;
   font-display: swap;
 }
 
-/* ── Crimson Pro (body) ── */
+/* ── JetBrains Mono (mono) ── */
 @font-face {
-  font-family: "Crimson Pro";
-  src: url("/assets/fonts/CrimsonPro.woff2") format("woff2");
-  font-weight: 200 900;
+  font-family: "JetBrains Mono";
+  src: url("/assets/fonts/JetBrainsMono.woff2") format("woff2");
+  font-weight: 300 700;
   font-style: normal;
   font-display: swap;
 }
 
 @layer base {
   :root {
-    --radius: 1rem;
+    --radius: 0.25rem;
 
-    /* ── Engagement Palette — White Rosy Pink Light Theme ── */
-    /* light ivory-rose base with warm blush pinks, wine & gold accents */
+    /* ── Dashboard Light Theme ── */
+    --background: 0.97 0.005 220;
+    --foreground: 0.15 0.02 220;
+    --card: 1.0 0.0 0;
+    --card-foreground: 0.15 0.02 220;
+    --popover: 1.0 0.0 0;
+    --popover-foreground: 0.15 0.02 220;
 
-    --background: 0.97 0.02 355; /* light rosy pink */
-    --foreground: 0.18 0.03 355; /* dark warm text */
-    --card: 0.98 0.015 355; /* light pinkish card */
-    --card-foreground: 0.18 0.03 355;
-    --popover: 0.98 0.015 355;
-    --popover-foreground: 0.18 0.03 355;
+    --primary: 0.42 0.12 145; /* Excel green */
+    --primary-foreground: 1.0 0.0 0;
 
-    --primary: 0.5 0.14 355; /* deep rose pink */
-    --primary-foreground: 0.99 0.005 30;
+    --secondary: 0.94 0.01 220;
+    --secondary-foreground: 0.3 0.02 220;
 
-    --secondary: 0.94 0.03 355; /* soft pink secondary */
-    --secondary-foreground: 0.25 0.05 355;
+    --muted: 0.95 0.008 220;
+    --muted-foreground: 0.5 0.02 220;
 
-    --muted: 0.95 0.025 355; /* light muted pink */
-    --muted-foreground: 0.45 0.07 355;
+    --accent: 0.94 0.01 220;
+    --accent-foreground: 0.2 0.02 220;
 
-    --accent: 0.75 0.1 65; /* champagne gold */
-    --accent-foreground: 0.22 0.04 15;
+    --destructive: 0.55 0.22 25;
+    --destructive-foreground: 1.0 0.0 0;
 
-    --destructive: 0.52 0.2 25;
-    --destructive-foreground: 0.97 0.01 30;
+    --border: 0.88 0.01 220;
+    --input: 0.92 0.01 220;
+    --ring: 0.42 0.12 145;
 
-    --border: 0.88 0.04 355; /* soft pink border */
-    --input: 0.95 0.025 355;
-    --ring: 0.55 0.12 355;
+    --chart-1: 0.55 0.18 270;
+    --chart-2: 0.55 0.18 200;
+    --chart-3: 0.55 0.18 145;
+    --chart-4: 0.65 0.18 70;
+    --chart-5: 0.55 0.18 15;
 
-    /* custom engagement tokens */
-    --blush: 0.76 0.12 355; /* rich blush pink */
-    --rose-gold: 0.62 0.13 15; /* deep rose gold */
-    --ivory: 0.97 0.01 80; /* ivory */
-    --wine: 0.44 0.14 355; /* deep rose wine */
-    --gold: 0.72 0.1 65; /* champagne gold */
-    --petal: 0.96 0.03 355; /* lightest petal */
-    --deep-text: 0.2 0.06 355; /* richest readable text */
-
-    --chart-1: 0.65 0.15 355;
-    --chart-2: 0.75 0.1 65;
-    --chart-3: 0.55 0.12 5;
-    --chart-4: 0.85 0.08 30;
-    --chart-5: 0.7 0.1 20;
+    --sidebar-background: 0.18 0.03 225;
+    --sidebar-foreground: 0.9 0.01 220;
   }
 
   * {
@@ -88,35 +80,10 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: "Crimson Pro", serif;
-    font-size: 18px;
-    line-height: 1.7;
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
     font-feature-settings: "rlig" 1, "calt" 1;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: "Fraunces", serif;
-    font-feature-settings: "swsh" 1;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-  }
-
-  h1 {
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    font-weight: 600;
-  }
-  h2 {
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    font-weight: 500;
-  }
-  h3 {
-    font-size: clamp(1.4rem, 2.5vw, 2rem);
-    font-weight: 500;
   }
 }
 
@@ -125,207 +92,10 @@
     min-width: 44px;
     min-height: 44px;
   }
-
   .font-display {
-    font-family: "Fraunces", serif;
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
   }
-
-  .font-serif-display {
-    font-family: "Instrument Serif", serif;
-  }
-
-  .font-body {
-    font-family: "Crimson Pro", serif;
-  }
-
-  /* Romantic text gradient */
-  .text-gradient-romantic {
-    background: linear-gradient(
-      135deg,
-      oklch(var(--wine)) 0%,
-      oklch(var(--rose-gold)) 50%,
-      oklch(var(--gold)) 100%
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .text-gradient-gold {
-    background: linear-gradient(
-      135deg,
-      oklch(var(--gold)) 0%,
-      oklch(0.88 0.08 75) 50%,
-      oklch(var(--gold)) 100%
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Decorative divider */
-  .divider-ornament::before,
-  .divider-ornament::after {
-    content: "✦";
-    color: oklch(var(--gold));
-    margin: 0 1rem;
-  }
-
-  /* Floating hearts animation */
-  @keyframes float-heart {
-    0% {
-      transform: translateY(0) rotate(0deg);
-      opacity: 0.7;
-    }
-    50% {
-      transform: translateY(-30px) rotate(15deg);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(-60px) rotate(-10deg);
-      opacity: 0;
-    }
-  }
-
-  @keyframes float-gentle {
-    0%,
-    100% {
-      transform: translateY(0px) rotate(-5deg);
-    }
-    50% {
-      transform: translateY(-12px) rotate(5deg);
-    }
-  }
-
-  @keyframes shimmer-gold {
-    0%,
-    100% {
-      opacity: 0.6;
-    }
-    50% {
-      opacity: 1;
-    }
-  }
-
-  @keyframes pulse-ring {
-    0% {
-      transform: scale(0.95);
-      box-shadow: 0 0 0 0 oklch(var(--blush) / 0.6);
-    }
-    70% {
-      transform: scale(1);
-      box-shadow: 0 0 0 15px oklch(var(--blush) / 0);
-    }
-    100% {
-      transform: scale(0.95);
-      box-shadow: 0 0 0 0 oklch(var(--blush) / 0);
-    }
-  }
-
-  @keyframes fade-up {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes scale-in {
-    from {
-      opacity: 0;
-      transform: scale(0.9);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  .animate-float-gentle {
-    animation: float-gentle 4s ease-in-out infinite;
-  }
-
-  .animate-shimmer-gold {
-    animation: shimmer-gold 2s ease-in-out infinite;
-  }
-
-  .animate-pulse-ring {
-    animation: pulse-ring 2.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
-  }
-
-  .animate-fade-up {
-    animation: fade-up 0.8s ease-out forwards;
-  }
-
-  .animate-scale-in {
-    animation: scale-in 0.6s ease-out forwards;
-  }
-
-  /* Delay utilities */
-  .animation-delay-200 {
-    animation-delay: 200ms;
-  }
-  .animation-delay-400 {
-    animation-delay: 400ms;
-  }
-  .animation-delay-600 {
-    animation-delay: 600ms;
-  }
-  .animation-delay-800 {
-    animation-delay: 800ms;
-  }
-  .animation-delay-1000 {
-    animation-delay: 1000ms;
-  }
-
-  /* Petal background pattern — light rosy pink version */
-  .bg-petal-pattern {
-    background-color: oklch(0.97 0.02 355);
-    background-image: radial-gradient(
-        circle at 20% 20%,
-        oklch(var(--blush) / 0.18) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 80% 80%,
-        oklch(var(--wine) / 0.08) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 50% 50%,
-        oklch(var(--gold) / 0.1) 0%,
-        transparent 70%
-      );
-  }
-
-  /* Glass card — light rosy pink glass */
-  .glass-card {
-    background: oklch(1.0 0.01 355 / 0.75);
-    backdrop-filter: blur(16px);
-    border: 1px solid oklch(var(--blush) / 0.35);
-  }
-
-  /* Section divider */
-  .section-divider {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 1.5rem 0;
-  }
-
-  .section-divider::before,
-  .section-divider::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      oklch(var(--rose-gold)),
-      transparent
-    );
+  .font-mono {
+    font-family: "JetBrains Mono", monospace;
   }
 }

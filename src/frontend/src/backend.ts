@@ -89,23 +89,12 @@ export class ExternalBlob {
         return this;
     }
 }
-export interface UserProfile {
-    email: string;
-    phone: string;
-    lastName: string;
-    firstName: string;
-}
-export interface TransformationOutput {
+export interface http_request_result {
     status: bigint;
     body: Uint8Array;
     headers: Array<http_header>;
 }
-export type Time = bigint;
-export interface http_header {
-    value: string;
-    name: string;
-}
-export interface http_request_result {
+export interface TransformationOutput {
     status: bigint;
     body: Uint8Array;
     headers: Array<http_header>;
@@ -117,22 +106,9 @@ export interface ShoppingItem {
     priceInCents: bigint;
     productDescription: string;
 }
-export interface RateBreakdown {
-    serviceFees: bigint;
-    taxes: bigint;
-    baseFare: bigint;
-}
 export interface TransformationInput {
     context: Uint8Array;
     response: http_request_result;
-}
-export interface Booking {
-    id: string;
-    costInStripeCents: bigint;
-    status: Variant_cancelled_completed_confirmed;
-    user: Principal;
-    bookingTime: Time;
-    route: Route;
 }
 export type StripeSessionStatus = {
     __kind__: "completed";
@@ -150,74 +126,33 @@ export interface StripeConfiguration {
     allowedCountries: Array<string>;
     secretKey: string;
 }
-export interface Review {
-    id: string;
-    bookingId: string;
-    user: Principal;
-    reviewText: string;
-    timestamp: Time;
-    rating: bigint;
+export interface UserProfile {
+    name: string;
 }
-export interface Route {
-    id: string;
-    destination: string;
-    rateBreakdown: RateBreakdown;
-    origin: string;
-    operatorName: string;
-    routeName: string;
-    distanceKm: bigint;
-    durationMinutes: bigint;
-    transportType: TransportType;
-    schedule: Array<Time>;
-    priceCents: bigint;
-}
-export enum TransportType {
-    bus = "bus",
-    train = "train",
-    taxi = "taxi"
+export interface http_header {
+    value: string;
+    name: string;
 }
 export enum UserRole {
     admin = "admin",
     user = "user",
     guest = "guest"
 }
-export enum Variant_cancelled_completed_confirmed {
-    cancelled = "cancelled",
-    completed = "completed",
-    confirmed = "confirmed"
-}
 export interface backendInterface {
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
-    addReview(bookingId: string, rating: bigint, reviewText: string): Promise<string>;
-    addRoute(route: Route): Promise<void>;
-    addRouteWithRateBreakdown(transportType: TransportType, id: string, operatorName: string, routeName: string, origin: string, destination: string, distanceKm: bigint, durationMinutes: bigint, schedule: Array<Time>, baseFare: bigint, taxes: bigint, serviceFees: bigint): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    createBooking(booking: Booking): Promise<void>;
     createCheckoutSession(items: Array<ShoppingItem>, successUrl: string, cancelUrl: string): Promise<string>;
-    deleteRoute(routeId: string): Promise<void>;
-    getAllRoutes(): Promise<Array<Route>>;
-    getAllRoutesForType(transportType: TransportType): Promise<Array<Route>>;
-    getBooking(bookingId: string): Promise<Booking>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
-    getReviewsForRoute(routeId: string): Promise<Array<Review>>;
-    getRoutesWithAvailableSchedule(afterTime: Time): Promise<Array<Route>>;
     getStripeSessionStatus(sessionId: string): Promise<StripeSessionStatus>;
-    getUserBookings(user: Principal): Promise<Array<Booking>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
     isStripeConfigured(): Promise<boolean>;
-    listRoutesByPriceRange(fromCents: bigint, toCents: bigint): Promise<Array<Route>>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
-    searchRoutesByOperator(operatorName: string): Promise<Array<Route>>;
-    searchRoutesByOperatorAndType(operatorName: string, transportType: TransportType): Promise<Array<Route>>;
-    searchRoutesByTimeRange(fromTime: Time, toTime: Time): Promise<Array<Route>>;
     setStripeConfiguration(config: StripeConfiguration): Promise<void>;
     transform(input: TransformationInput): Promise<TransformationOutput>;
-    updateBooking(booking: Booking): Promise<void>;
-    updateRoute(route: Route): Promise<void>;
 }
-import type { Booking as _Booking, RateBreakdown as _RateBreakdown, Route as _Route, StripeSessionStatus as _StripeSessionStatus, Time as _Time, TransportType as _TransportType, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
+import type { StripeSessionStatus as _StripeSessionStatus, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _initializeAccessControlWithSecret(arg0: string): Promise<void> {
@@ -234,73 +169,17 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async addReview(arg0: string, arg1: bigint, arg2: string): Promise<string> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.addReview(arg0, arg1, arg2);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.addReview(arg0, arg1, arg2);
-            return result;
-        }
-    }
-    async addRoute(arg0: Route): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.addRoute(to_candid_Route_n1(this._uploadFile, this._downloadFile, arg0));
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.addRoute(to_candid_Route_n1(this._uploadFile, this._downloadFile, arg0));
-            return result;
-        }
-    }
-    async addRouteWithRateBreakdown(arg0: TransportType, arg1: string, arg2: string, arg3: string, arg4: string, arg5: string, arg6: bigint, arg7: bigint, arg8: Array<Time>, arg9: bigint, arg10: bigint, arg11: bigint): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.addRouteWithRateBreakdown(to_candid_TransportType_n3(this._uploadFile, this._downloadFile, arg0), arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.addRouteWithRateBreakdown(to_candid_TransportType_n3(this._uploadFile, this._downloadFile, arg0), arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
-            return result;
-        }
-    }
     async assignCallerUserRole(arg0: Principal, arg1: UserRole): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n5(this._uploadFile, this._downloadFile, arg1));
+                const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n1(this._uploadFile, this._downloadFile, arg1));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n5(this._uploadFile, this._downloadFile, arg1));
-            return result;
-        }
-    }
-    async createBooking(arg0: Booking): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.createBooking(to_candid_Booking_n7(this._uploadFile, this._downloadFile, arg0));
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.createBooking(to_candid_Booking_n7(this._uploadFile, this._downloadFile, arg0));
+            const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n1(this._uploadFile, this._downloadFile, arg1));
             return result;
         }
     }
@@ -318,158 +197,60 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async deleteRoute(arg0: string): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.deleteRoute(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.deleteRoute(arg0);
-            return result;
-        }
-    }
-    async getAllRoutes(): Promise<Array<Route>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getAllRoutes();
-                return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getAllRoutes();
-            return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async getAllRoutesForType(arg0: TransportType): Promise<Array<Route>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getAllRoutesForType(to_candid_TransportType_n3(this._uploadFile, this._downloadFile, arg0));
-                return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getAllRoutesForType(to_candid_TransportType_n3(this._uploadFile, this._downloadFile, arg0));
-            return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async getBooking(arg0: string): Promise<Booking> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getBooking(arg0);
-                return from_candid_Booking_n15(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getBooking(arg0);
-            return from_candid_Booking_n15(this._uploadFile, this._downloadFile, result);
-        }
-    }
     async getCallerUserProfile(): Promise<UserProfile | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getCallerUserProfile();
-                return from_candid_opt_n18(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n3(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getCallerUserProfile();
-            return from_candid_opt_n18(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n3(this._uploadFile, this._downloadFile, result);
         }
     }
     async getCallerUserRole(): Promise<UserRole> {
         if (this.processError) {
             try {
                 const result = await this.actor.getCallerUserRole();
-                return from_candid_UserRole_n19(this._uploadFile, this._downloadFile, result);
+                return from_candid_UserRole_n4(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getCallerUserRole();
-            return from_candid_UserRole_n19(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async getReviewsForRoute(arg0: string): Promise<Array<Review>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getReviewsForRoute(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getReviewsForRoute(arg0);
-            return result;
-        }
-    }
-    async getRoutesWithAvailableSchedule(arg0: Time): Promise<Array<Route>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getRoutesWithAvailableSchedule(arg0);
-                return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getRoutesWithAvailableSchedule(arg0);
-            return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
+            return from_candid_UserRole_n4(this._uploadFile, this._downloadFile, result);
         }
     }
     async getStripeSessionStatus(arg0: string): Promise<StripeSessionStatus> {
         if (this.processError) {
             try {
                 const result = await this.actor.getStripeSessionStatus(arg0);
-                return from_candid_StripeSessionStatus_n21(this._uploadFile, this._downloadFile, result);
+                return from_candid_StripeSessionStatus_n6(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getStripeSessionStatus(arg0);
-            return from_candid_StripeSessionStatus_n21(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async getUserBookings(arg0: Principal): Promise<Array<Booking>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getUserBookings(arg0);
-                return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getUserBookings(arg0);
-            return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
+            return from_candid_StripeSessionStatus_n6(this._uploadFile, this._downloadFile, result);
         }
     }
     async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getUserProfile(arg0);
-                return from_candid_opt_n18(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n3(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getUserProfile(arg0);
-            return from_candid_opt_n18(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n3(this._uploadFile, this._downloadFile, result);
         }
     }
     async isCallerAdmin(): Promise<boolean> {
@@ -500,20 +281,6 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async listRoutesByPriceRange(arg0: bigint, arg1: bigint): Promise<Array<Route>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.listRoutesByPriceRange(arg0, arg1);
-                return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.listRoutesByPriceRange(arg0, arg1);
-            return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
-        }
-    }
     async saveCallerUserProfile(arg0: UserProfile): Promise<void> {
         if (this.processError) {
             try {
@@ -526,48 +293,6 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.saveCallerUserProfile(arg0);
             return result;
-        }
-    }
-    async searchRoutesByOperator(arg0: string): Promise<Array<Route>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.searchRoutesByOperator(arg0);
-                return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.searchRoutesByOperator(arg0);
-            return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async searchRoutesByOperatorAndType(arg0: string, arg1: TransportType): Promise<Array<Route>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.searchRoutesByOperatorAndType(arg0, to_candid_TransportType_n3(this._uploadFile, this._downloadFile, arg1));
-                return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.searchRoutesByOperatorAndType(arg0, to_candid_TransportType_n3(this._uploadFile, this._downloadFile, arg1));
-            return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async searchRoutesByTimeRange(arg0: Time, arg1: Time): Promise<Array<Route>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.searchRoutesByTimeRange(arg0, arg1);
-                return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.searchRoutesByTimeRange(arg0, arg1);
-            return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
         }
     }
     async setStripeConfiguration(arg0: StripeConfiguration): Promise<void> {
@@ -598,126 +323,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async updateBooking(arg0: Booking): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.updateBooking(to_candid_Booking_n7(this._uploadFile, this._downloadFile, arg0));
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.updateBooking(to_candid_Booking_n7(this._uploadFile, this._downloadFile, arg0));
-            return result;
-        }
-    }
-    async updateRoute(arg0: Route): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.updateRoute(to_candid_Route_n1(this._uploadFile, this._downloadFile, arg0));
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.updateRoute(to_candid_Route_n1(this._uploadFile, this._downloadFile, arg0));
-            return result;
-        }
-    }
 }
-function from_candid_Booking_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Booking): Booking {
-    return from_candid_record_n16(_uploadFile, _downloadFile, value);
+function from_candid_StripeSessionStatus_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _StripeSessionStatus): StripeSessionStatus {
+    return from_candid_variant_n7(_uploadFile, _downloadFile, value);
 }
-function from_candid_Route_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Route): Route {
-    return from_candid_record_n12(_uploadFile, _downloadFile, value);
+function from_candid_UserRole_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
+    return from_candid_variant_n5(_uploadFile, _downloadFile, value);
 }
-function from_candid_StripeSessionStatus_n21(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _StripeSessionStatus): StripeSessionStatus {
-    return from_candid_variant_n22(_uploadFile, _downloadFile, value);
-}
-function from_candid_TransportType_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _TransportType): TransportType {
-    return from_candid_variant_n14(_uploadFile, _downloadFile, value);
-}
-function from_candid_UserRole_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
-    return from_candid_variant_n20(_uploadFile, _downloadFile, value);
-}
-function from_candid_opt_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
+function from_candid_opt_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_opt_n24(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
+function from_candid_opt_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_record_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    id: string;
-    destination: string;
-    rateBreakdown: _RateBreakdown;
-    origin: string;
-    operatorName: string;
-    routeName: string;
-    distanceKm: bigint;
-    durationMinutes: bigint;
-    transportType: _TransportType;
-    schedule: Array<_Time>;
-    priceCents: bigint;
-}): {
-    id: string;
-    destination: string;
-    rateBreakdown: RateBreakdown;
-    origin: string;
-    operatorName: string;
-    routeName: string;
-    distanceKm: bigint;
-    durationMinutes: bigint;
-    transportType: TransportType;
-    schedule: Array<Time>;
-    priceCents: bigint;
-} {
-    return {
-        id: value.id,
-        destination: value.destination,
-        rateBreakdown: value.rateBreakdown,
-        origin: value.origin,
-        operatorName: value.operatorName,
-        routeName: value.routeName,
-        distanceKm: value.distanceKm,
-        durationMinutes: value.durationMinutes,
-        transportType: from_candid_TransportType_n13(_uploadFile, _downloadFile, value.transportType),
-        schedule: value.schedule,
-        priceCents: value.priceCents
-    };
-}
-function from_candid_record_n16(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    id: string;
-    costInStripeCents: bigint;
-    status: {
-        cancelled: null;
-    } | {
-        completed: null;
-    } | {
-        confirmed: null;
-    };
-    user: Principal;
-    bookingTime: _Time;
-    route: _Route;
-}): {
-    id: string;
-    costInStripeCents: bigint;
-    status: Variant_cancelled_completed_confirmed;
-    user: Principal;
-    bookingTime: Time;
-    route: Route;
-} {
-    return {
-        id: value.id,
-        costInStripeCents: value.costInStripeCents,
-        status: from_candid_variant_n17(_uploadFile, _downloadFile, value.status),
-        user: value.user,
-        bookingTime: value.bookingTime,
-        route: from_candid_Route_n11(_uploadFile, _downloadFile, value.route)
-    };
-}
-function from_candid_record_n23(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_record_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     userPrincipal: [] | [string];
     response: string;
 }): {
@@ -725,29 +344,11 @@ function from_candid_record_n23(_uploadFile: (file: ExternalBlob) => Promise<Uin
     response: string;
 } {
     return {
-        userPrincipal: record_opt_to_undefined(from_candid_opt_n24(_uploadFile, _downloadFile, value.userPrincipal)),
+        userPrincipal: record_opt_to_undefined(from_candid_opt_n9(_uploadFile, _downloadFile, value.userPrincipal)),
         response: value.response
     };
 }
-function from_candid_variant_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    bus: null;
-} | {
-    train: null;
-} | {
-    taxi: null;
-}): TransportType {
-    return "bus" in value ? TransportType.bus : "train" in value ? TransportType.train : "taxi" in value ? TransportType.taxi : value;
-}
-function from_candid_variant_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    cancelled: null;
-} | {
-    completed: null;
-} | {
-    confirmed: null;
-}): Variant_cancelled_completed_confirmed {
-    return "cancelled" in value ? Variant_cancelled_completed_confirmed.cancelled : "completed" in value ? Variant_cancelled_completed_confirmed.completed : "confirmed" in value ? Variant_cancelled_completed_confirmed.confirmed : value;
-}
-function from_candid_variant_n20(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_variant_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     admin: null;
 } | {
     user: null;
@@ -756,7 +357,7 @@ function from_candid_variant_n20(_uploadFile: (file: ExternalBlob) => Promise<Ui
 }): UserRole {
     return "admin" in value ? UserRole.admin : "user" in value ? UserRole.user : "guest" in value ? UserRole.guest : value;
 }
-function from_candid_variant_n22(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_variant_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     completed: {
         userPrincipal: [] | [string];
         response: string;
@@ -779,115 +380,16 @@ function from_candid_variant_n22(_uploadFile: (file: ExternalBlob) => Promise<Ui
 } {
     return "completed" in value ? {
         __kind__: "completed",
-        completed: from_candid_record_n23(_uploadFile, _downloadFile, value.completed)
+        completed: from_candid_record_n8(_uploadFile, _downloadFile, value.completed)
     } : "failed" in value ? {
         __kind__: "failed",
         failed: value.failed
     } : value;
 }
-function from_candid_vec_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Route>): Array<Route> {
-    return value.map((x)=>from_candid_Route_n11(_uploadFile, _downloadFile, x));
+function to_candid_UserRole_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
+    return to_candid_variant_n2(_uploadFile, _downloadFile, value);
 }
-function from_candid_vec_n25(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Booking>): Array<Booking> {
-    return value.map((x)=>from_candid_Booking_n15(_uploadFile, _downloadFile, x));
-}
-function to_candid_Booking_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Booking): _Booking {
-    return to_candid_record_n8(_uploadFile, _downloadFile, value);
-}
-function to_candid_Route_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Route): _Route {
-    return to_candid_record_n2(_uploadFile, _downloadFile, value);
-}
-function to_candid_TransportType_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: TransportType): _TransportType {
-    return to_candid_variant_n4(_uploadFile, _downloadFile, value);
-}
-function to_candid_UserRole_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
-    return to_candid_variant_n6(_uploadFile, _downloadFile, value);
-}
-function to_candid_record_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    id: string;
-    destination: string;
-    rateBreakdown: RateBreakdown;
-    origin: string;
-    operatorName: string;
-    routeName: string;
-    distanceKm: bigint;
-    durationMinutes: bigint;
-    transportType: TransportType;
-    schedule: Array<Time>;
-    priceCents: bigint;
-}): {
-    id: string;
-    destination: string;
-    rateBreakdown: _RateBreakdown;
-    origin: string;
-    operatorName: string;
-    routeName: string;
-    distanceKm: bigint;
-    durationMinutes: bigint;
-    transportType: _TransportType;
-    schedule: Array<_Time>;
-    priceCents: bigint;
-} {
-    return {
-        id: value.id,
-        destination: value.destination,
-        rateBreakdown: value.rateBreakdown,
-        origin: value.origin,
-        operatorName: value.operatorName,
-        routeName: value.routeName,
-        distanceKm: value.distanceKm,
-        durationMinutes: value.durationMinutes,
-        transportType: to_candid_TransportType_n3(_uploadFile, _downloadFile, value.transportType),
-        schedule: value.schedule,
-        priceCents: value.priceCents
-    };
-}
-function to_candid_record_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    id: string;
-    costInStripeCents: bigint;
-    status: Variant_cancelled_completed_confirmed;
-    user: Principal;
-    bookingTime: Time;
-    route: Route;
-}): {
-    id: string;
-    costInStripeCents: bigint;
-    status: {
-        cancelled: null;
-    } | {
-        completed: null;
-    } | {
-        confirmed: null;
-    };
-    user: Principal;
-    bookingTime: _Time;
-    route: _Route;
-} {
-    return {
-        id: value.id,
-        costInStripeCents: value.costInStripeCents,
-        status: to_candid_variant_n9(_uploadFile, _downloadFile, value.status),
-        user: value.user,
-        bookingTime: value.bookingTime,
-        route: to_candid_Route_n1(_uploadFile, _downloadFile, value.route)
-    };
-}
-function to_candid_variant_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: TransportType): {
-    bus: null;
-} | {
-    train: null;
-} | {
-    taxi: null;
-} {
-    return value == TransportType.bus ? {
-        bus: null
-    } : value == TransportType.train ? {
-        train: null
-    } : value == TransportType.taxi ? {
-        taxi: null
-    } : value;
-}
-function to_candid_variant_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): {
+function to_candid_variant_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): {
     admin: null;
 } | {
     user: null;
@@ -900,21 +402,6 @@ function to_candid_variant_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8
         user: null
     } : value == UserRole.guest ? {
         guest: null
-    } : value;
-}
-function to_candid_variant_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Variant_cancelled_completed_confirmed): {
-    cancelled: null;
-} | {
-    completed: null;
-} | {
-    confirmed: null;
-} {
-    return value == Variant_cancelled_completed_confirmed.cancelled ? {
-        cancelled: null
-    } : value == Variant_cancelled_completed_confirmed.completed ? {
-        completed: null
-    } : value == Variant_cancelled_completed_confirmed.confirmed ? {
-        confirmed: null
     } : value;
 }
 export interface CreateActorOptions {

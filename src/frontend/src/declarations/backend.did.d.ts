@@ -10,42 +10,6 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface Booking {
-  'id' : string,
-  'costInStripeCents' : bigint,
-  'status' : { 'cancelled' : null } |
-    { 'completed' : null } |
-    { 'confirmed' : null },
-  'user' : Principal,
-  'bookingTime' : Time,
-  'route' : Route,
-}
-export interface RateBreakdown {
-  'serviceFees' : bigint,
-  'taxes' : bigint,
-  'baseFare' : bigint,
-}
-export interface Review {
-  'id' : string,
-  'bookingId' : string,
-  'user' : Principal,
-  'reviewText' : string,
-  'timestamp' : Time,
-  'rating' : bigint,
-}
-export interface Route {
-  'id' : string,
-  'destination' : string,
-  'rateBreakdown' : RateBreakdown,
-  'origin' : string,
-  'operatorName' : string,
-  'routeName' : string,
-  'distanceKm' : bigint,
-  'durationMinutes' : bigint,
-  'transportType' : TransportType,
-  'schedule' : Array<Time>,
-  'priceCents' : bigint,
-}
 export interface ShoppingItem {
   'productName' : string,
   'currency' : string,
@@ -61,7 +25,6 @@ export type StripeSessionStatus = {
     'completed' : { 'userPrincipal' : [] | [string], 'response' : string }
   } |
   { 'failed' : { 'error' : string } };
-export type Time = bigint;
 export interface TransformationInput {
   'context' : Uint8Array,
   'response' : http_request_result,
@@ -71,15 +34,7 @@ export interface TransformationOutput {
   'body' : Uint8Array,
   'headers' : Array<http_header>,
 }
-export type TransportType = { 'bus' : null } |
-  { 'train' : null } |
-  { 'taxi' : null };
-export interface UserProfile {
-  'email' : string,
-  'phone' : string,
-  'lastName' : string,
-  'firstName' : string,
-}
+export interface UserProfile { 'name' : string }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
   { 'guest' : null };
@@ -91,56 +46,20 @@ export interface http_request_result {
 }
 export interface _SERVICE {
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
-  'addReview' : ActorMethod<[string, bigint, string], string>,
-  'addRoute' : ActorMethod<[Route], undefined>,
-  'addRouteWithRateBreakdown' : ActorMethod<
-    [
-      TransportType,
-      string,
-      string,
-      string,
-      string,
-      string,
-      bigint,
-      bigint,
-      Array<Time>,
-      bigint,
-      bigint,
-      bigint,
-    ],
-    undefined
-  >,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
-  'createBooking' : ActorMethod<[Booking], undefined>,
   'createCheckoutSession' : ActorMethod<
     [Array<ShoppingItem>, string, string],
     string
   >,
-  'deleteRoute' : ActorMethod<[string], undefined>,
-  'getAllRoutes' : ActorMethod<[], Array<Route>>,
-  'getAllRoutesForType' : ActorMethod<[TransportType], Array<Route>>,
-  'getBooking' : ActorMethod<[string], Booking>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
-  'getReviewsForRoute' : ActorMethod<[string], Array<Review>>,
-  'getRoutesWithAvailableSchedule' : ActorMethod<[Time], Array<Route>>,
   'getStripeSessionStatus' : ActorMethod<[string], StripeSessionStatus>,
-  'getUserBookings' : ActorMethod<[Principal], Array<Booking>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'isStripeConfigured' : ActorMethod<[], boolean>,
-  'listRoutesByPriceRange' : ActorMethod<[bigint, bigint], Array<Route>>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
-  'searchRoutesByOperator' : ActorMethod<[string], Array<Route>>,
-  'searchRoutesByOperatorAndType' : ActorMethod<
-    [string, TransportType],
-    Array<Route>
-  >,
-  'searchRoutesByTimeRange' : ActorMethod<[Time, Time], Array<Route>>,
   'setStripeConfiguration' : ActorMethod<[StripeConfiguration], undefined>,
   'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
-  'updateBooking' : ActorMethod<[Booking], undefined>,
-  'updateRoute' : ActorMethod<[Route], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

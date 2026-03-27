@@ -8,46 +8,10 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
-export const RateBreakdown = IDL.Record({
-  'serviceFees' : IDL.Nat,
-  'taxes' : IDL.Nat,
-  'baseFare' : IDL.Nat,
-});
-export const TransportType = IDL.Variant({
-  'bus' : IDL.Null,
-  'train' : IDL.Null,
-  'taxi' : IDL.Null,
-});
-export const Time = IDL.Int;
-export const Route = IDL.Record({
-  'id' : IDL.Text,
-  'destination' : IDL.Text,
-  'rateBreakdown' : RateBreakdown,
-  'origin' : IDL.Text,
-  'operatorName' : IDL.Text,
-  'routeName' : IDL.Text,
-  'distanceKm' : IDL.Nat,
-  'durationMinutes' : IDL.Nat,
-  'transportType' : TransportType,
-  'schedule' : IDL.Vec(Time),
-  'priceCents' : IDL.Nat,
-});
 export const UserRole = IDL.Variant({
   'admin' : IDL.Null,
   'user' : IDL.Null,
   'guest' : IDL.Null,
-});
-export const Booking = IDL.Record({
-  'id' : IDL.Text,
-  'costInStripeCents' : IDL.Nat,
-  'status' : IDL.Variant({
-    'cancelled' : IDL.Null,
-    'completed' : IDL.Null,
-    'confirmed' : IDL.Null,
-  }),
-  'user' : IDL.Principal,
-  'bookingTime' : Time,
-  'route' : Route,
 });
 export const ShoppingItem = IDL.Record({
   'productName' : IDL.Text,
@@ -56,20 +20,7 @@ export const ShoppingItem = IDL.Record({
   'priceInCents' : IDL.Nat,
   'productDescription' : IDL.Text,
 });
-export const UserProfile = IDL.Record({
-  'email' : IDL.Text,
-  'phone' : IDL.Text,
-  'lastName' : IDL.Text,
-  'firstName' : IDL.Text,
-});
-export const Review = IDL.Record({
-  'id' : IDL.Text,
-  'bookingId' : IDL.Text,
-  'user' : IDL.Principal,
-  'reviewText' : IDL.Text,
-  'timestamp' : Time,
-  'rating' : IDL.Nat,
-});
+export const UserProfile = IDL.Record({ 'name' : IDL.Text });
 export const StripeSessionStatus = IDL.Variant({
   'completed' : IDL.Record({
     'userPrincipal' : IDL.Opt(IDL.Text),
@@ -102,51 +53,15 @@ export const TransformationOutput = IDL.Record({
 
 export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
-  'addReview' : IDL.Func([IDL.Text, IDL.Nat, IDL.Text], [IDL.Text], []),
-  'addRoute' : IDL.Func([Route], [], []),
-  'addRouteWithRateBreakdown' : IDL.Func(
-      [
-        TransportType,
-        IDL.Text,
-        IDL.Text,
-        IDL.Text,
-        IDL.Text,
-        IDL.Text,
-        IDL.Nat,
-        IDL.Nat,
-        IDL.Vec(Time),
-        IDL.Nat,
-        IDL.Nat,
-        IDL.Nat,
-      ],
-      [],
-      [],
-    ),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-  'createBooking' : IDL.Func([Booking], [], []),
   'createCheckoutSession' : IDL.Func(
       [IDL.Vec(ShoppingItem), IDL.Text, IDL.Text],
       [IDL.Text],
       [],
     ),
-  'deleteRoute' : IDL.Func([IDL.Text], [], []),
-  'getAllRoutes' : IDL.Func([], [IDL.Vec(Route)], ['query']),
-  'getAllRoutesForType' : IDL.Func(
-      [TransportType],
-      [IDL.Vec(Route)],
-      ['query'],
-    ),
-  'getBooking' : IDL.Func([IDL.Text], [Booking], ['query']),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-  'getReviewsForRoute' : IDL.Func([IDL.Text], [IDL.Vec(Review)], ['query']),
-  'getRoutesWithAvailableSchedule' : IDL.Func(
-      [Time],
-      [IDL.Vec(Route)],
-      ['query'],
-    ),
   'getStripeSessionStatus' : IDL.Func([IDL.Text], [StripeSessionStatus], []),
-  'getUserBookings' : IDL.Func([IDL.Principal], [IDL.Vec(Booking)], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
@@ -154,76 +69,22 @@ export const idlService = IDL.Service({
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'isStripeConfigured' : IDL.Func([], [IDL.Bool], ['query']),
-  'listRoutesByPriceRange' : IDL.Func(
-      [IDL.Nat, IDL.Nat],
-      [IDL.Vec(Route)],
-      ['query'],
-    ),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-  'searchRoutesByOperator' : IDL.Func([IDL.Text], [IDL.Vec(Route)], ['query']),
-  'searchRoutesByOperatorAndType' : IDL.Func(
-      [IDL.Text, TransportType],
-      [IDL.Vec(Route)],
-      ['query'],
-    ),
-  'searchRoutesByTimeRange' : IDL.Func(
-      [Time, Time],
-      [IDL.Vec(Route)],
-      ['query'],
-    ),
   'setStripeConfiguration' : IDL.Func([StripeConfiguration], [], []),
   'transform' : IDL.Func(
       [TransformationInput],
       [TransformationOutput],
       ['query'],
     ),
-  'updateBooking' : IDL.Func([Booking], [], []),
-  'updateRoute' : IDL.Func([Route], [], []),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
-  const RateBreakdown = IDL.Record({
-    'serviceFees' : IDL.Nat,
-    'taxes' : IDL.Nat,
-    'baseFare' : IDL.Nat,
-  });
-  const TransportType = IDL.Variant({
-    'bus' : IDL.Null,
-    'train' : IDL.Null,
-    'taxi' : IDL.Null,
-  });
-  const Time = IDL.Int;
-  const Route = IDL.Record({
-    'id' : IDL.Text,
-    'destination' : IDL.Text,
-    'rateBreakdown' : RateBreakdown,
-    'origin' : IDL.Text,
-    'operatorName' : IDL.Text,
-    'routeName' : IDL.Text,
-    'distanceKm' : IDL.Nat,
-    'durationMinutes' : IDL.Nat,
-    'transportType' : TransportType,
-    'schedule' : IDL.Vec(Time),
-    'priceCents' : IDL.Nat,
-  });
   const UserRole = IDL.Variant({
     'admin' : IDL.Null,
     'user' : IDL.Null,
     'guest' : IDL.Null,
-  });
-  const Booking = IDL.Record({
-    'id' : IDL.Text,
-    'costInStripeCents' : IDL.Nat,
-    'status' : IDL.Variant({
-      'cancelled' : IDL.Null,
-      'completed' : IDL.Null,
-      'confirmed' : IDL.Null,
-    }),
-    'user' : IDL.Principal,
-    'bookingTime' : Time,
-    'route' : Route,
   });
   const ShoppingItem = IDL.Record({
     'productName' : IDL.Text,
@@ -232,20 +93,7 @@ export const idlFactory = ({ IDL }) => {
     'priceInCents' : IDL.Nat,
     'productDescription' : IDL.Text,
   });
-  const UserProfile = IDL.Record({
-    'email' : IDL.Text,
-    'phone' : IDL.Text,
-    'lastName' : IDL.Text,
-    'firstName' : IDL.Text,
-  });
-  const Review = IDL.Record({
-    'id' : IDL.Text,
-    'bookingId' : IDL.Text,
-    'user' : IDL.Principal,
-    'reviewText' : IDL.Text,
-    'timestamp' : Time,
-    'rating' : IDL.Nat,
-  });
+  const UserProfile = IDL.Record({ 'name' : IDL.Text });
   const StripeSessionStatus = IDL.Variant({
     'completed' : IDL.Record({
       'userPrincipal' : IDL.Opt(IDL.Text),
@@ -275,55 +123,15 @@ export const idlFactory = ({ IDL }) => {
   
   return IDL.Service({
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
-    'addReview' : IDL.Func([IDL.Text, IDL.Nat, IDL.Text], [IDL.Text], []),
-    'addRoute' : IDL.Func([Route], [], []),
-    'addRouteWithRateBreakdown' : IDL.Func(
-        [
-          TransportType,
-          IDL.Text,
-          IDL.Text,
-          IDL.Text,
-          IDL.Text,
-          IDL.Text,
-          IDL.Nat,
-          IDL.Nat,
-          IDL.Vec(Time),
-          IDL.Nat,
-          IDL.Nat,
-          IDL.Nat,
-        ],
-        [],
-        [],
-      ),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-    'createBooking' : IDL.Func([Booking], [], []),
     'createCheckoutSession' : IDL.Func(
         [IDL.Vec(ShoppingItem), IDL.Text, IDL.Text],
         [IDL.Text],
         [],
       ),
-    'deleteRoute' : IDL.Func([IDL.Text], [], []),
-    'getAllRoutes' : IDL.Func([], [IDL.Vec(Route)], ['query']),
-    'getAllRoutesForType' : IDL.Func(
-        [TransportType],
-        [IDL.Vec(Route)],
-        ['query'],
-      ),
-    'getBooking' : IDL.Func([IDL.Text], [Booking], ['query']),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
-    'getReviewsForRoute' : IDL.Func([IDL.Text], [IDL.Vec(Review)], ['query']),
-    'getRoutesWithAvailableSchedule' : IDL.Func(
-        [Time],
-        [IDL.Vec(Route)],
-        ['query'],
-      ),
     'getStripeSessionStatus' : IDL.Func([IDL.Text], [StripeSessionStatus], []),
-    'getUserBookings' : IDL.Func(
-        [IDL.Principal],
-        [IDL.Vec(Booking)],
-        ['query'],
-      ),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],
@@ -331,35 +139,13 @@ export const idlFactory = ({ IDL }) => {
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'isStripeConfigured' : IDL.Func([], [IDL.Bool], ['query']),
-    'listRoutesByPriceRange' : IDL.Func(
-        [IDL.Nat, IDL.Nat],
-        [IDL.Vec(Route)],
-        ['query'],
-      ),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-    'searchRoutesByOperator' : IDL.Func(
-        [IDL.Text],
-        [IDL.Vec(Route)],
-        ['query'],
-      ),
-    'searchRoutesByOperatorAndType' : IDL.Func(
-        [IDL.Text, TransportType],
-        [IDL.Vec(Route)],
-        ['query'],
-      ),
-    'searchRoutesByTimeRange' : IDL.Func(
-        [Time, Time],
-        [IDL.Vec(Route)],
-        ['query'],
-      ),
     'setStripeConfiguration' : IDL.Func([StripeConfiguration], [], []),
     'transform' : IDL.Func(
         [TransformationInput],
         [TransformationOutput],
         ['query'],
       ),
-    'updateBooking' : IDL.Func([Booking], [], []),
-    'updateRoute' : IDL.Func([Route], [], []),
   });
 };
 
