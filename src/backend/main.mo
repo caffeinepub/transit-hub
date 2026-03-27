@@ -1,5 +1,5 @@
 import MixinAuthorization "authorization/MixinAuthorization";
-import Migration "migration";
+
 import Map "mo:core/Map";
 import OutCall "http-outcalls/outcall";
 import Principal "mo:core/Principal";
@@ -8,7 +8,7 @@ import Stripe "stripe/stripe";
 import AccessControl "authorization/access-control";
 import Text "mo:core/Text";
 
-(with migration = Migration.run)
+
 actor {
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);

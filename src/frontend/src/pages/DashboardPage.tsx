@@ -2,14 +2,17 @@ import {
   BarChart3,
   Bed,
   Bus,
+  Calendar,
   CheckCircle2,
   Download,
   FileSpreadsheet,
+  Filter,
   IndianRupee,
   MapPin,
   Plane,
   Plus,
   Receipt,
+  RotateCcw,
   TicketCheck,
   Train,
   TrendingUp,
@@ -96,118 +99,763 @@ const CHART_COLORS = [
   "#3b82f6",
   "#84cc16",
 ];
+// ── Month config ─────────────────────────────────────────────────────────────
+
+const MONTHS = [
+  { label: "Apr 2025", value: "2025-04" },
+  { label: "May 2025", value: "2025-05" },
+  { label: "Jun 2025", value: "2025-06" },
+  { label: "Jul 2025", value: "2025-07" },
+  { label: "Aug 2025", value: "2025-08" },
+  { label: "Sep 2025", value: "2025-09" },
+  { label: "Oct 2025", value: "2025-10" },
+  { label: "Nov 2025", value: "2025-11" },
+  { label: "Dec 2025", value: "2025-12" },
+  { label: "Jan 2026", value: "2026-01" },
+  { label: "Feb 2026", value: "2026-02" },
+  { label: "Mar 2026", value: "2026-03" },
+];
+
+type QuickFilter = "Q1" | "Q2" | "Q3" | "Q4" | "All";
+
+function useMonthFilter() {
+  const [fromIdx, setFromIdx] = useState(0);
+  const [toIdx, setToIdx] = useState(11);
+  const [activeQuick, setActiveQuick] = useState<QuickFilter>("All");
+
+  const applyQuick = (q: QuickFilter) => {
+    setActiveQuick(q);
+    if (q === "Q1") {
+      setFromIdx(0);
+      setToIdx(2);
+    } else if (q === "Q2") {
+      setFromIdx(3);
+      setToIdx(5);
+    } else if (q === "Q3") {
+      setFromIdx(6);
+      setToIdx(8);
+    } else if (q === "Q4") {
+      setFromIdx(9);
+      setToIdx(11);
+    } else {
+      setFromIdx(0);
+      setToIdx(11);
+    }
+  };
+
+  const reset = () => applyQuick("All");
+
+  function filterTrend<T extends { month: string }>(data: T[]): T[] {
+    return data.filter((d) => {
+      const idx = MONTHS.findIndex((m) => m.value === d.month);
+      return idx >= fromIdx && idx <= toIdx;
+    });
+  }
+
+  return {
+    fromIdx,
+    toIdx,
+    setFromIdx,
+    setToIdx,
+    activeQuick,
+    applyQuick,
+    reset,
+    filterTrend,
+  };
+}
+
+function FilterBar({
+  accentColor,
+  fromIdx,
+  toIdx,
+  setFromIdx,
+  setToIdx,
+  activeQuick,
+  applyQuick,
+  reset,
+}: {
+  accentColor: string;
+  fromIdx: number;
+  toIdx: number;
+  setFromIdx: (i: number) => void;
+  setToIdx: (i: number) => void;
+  activeQuick: QuickFilter;
+  applyQuick: (q: QuickFilter) => void;
+  reset: () => void;
+}) {
+  const quickFilters: QuickFilter[] = ["Q1", "Q2", "Q3", "Q4", "All"];
+  const _quickLabels: Record<QuickFilter, string> = {
+    Q1: "Q1 Apr–Jun",
+    Q2: "Q2 Jul–Sep",
+    Q3: "Q3 Oct–Dec",
+    Q4: "Q4 Jan–Mar",
+    All: "All Months",
+  };
+  return (
+    <div
+      className="rounded-xl p-3 flex flex-wrap items-center gap-3 mb-1"
+      style={{
+        background: "linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%)",
+        border: `1.5px solid ${accentColor}40`,
+        boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+      }}
+      data-ocid="filter.panel"
+    >
+      <div className="flex items-center gap-1.5">
+        <Filter size={13} style={{ color: accentColor }} />
+        <span
+          className="text-[11px] font-bold uppercase tracking-wide"
+          style={{ color: accentColor }}
+        >
+          Filters
+        </span>
+      </div>
+      <div className="flex items-center gap-1.5">
+        <Calendar size={12} className="text-gray-400" />
+        <select
+          data-ocid="filter.from.select"
+          value={fromIdx}
+          onChange={(e) => {
+            setFromIdx(Number(e.target.value));
+            applyQuick("All");
+          }}
+          className="text-[11px] border rounded-lg px-2 py-1 bg-white text-gray-700 cursor-pointer outline-none focus:ring-2"
+          style={
+            {
+              borderColor: `${accentColor}60`,
+              focusRingColor: accentColor,
+            } as React.CSSProperties
+          }
+        >
+          {MONTHS.slice(0, toIdx + 1).map((m, i) => (
+            <option key={m.value} value={i}>
+              {m.label}
+            </option>
+          ))}
+        </select>
+        <span className="text-[11px] text-gray-400">→</span>
+        <select
+          data-ocid="filter.to.select"
+          value={toIdx}
+          onChange={(e) => {
+            setToIdx(Number(e.target.value));
+            applyQuick("All");
+          }}
+          className="text-[11px] border rounded-lg px-2 py-1 bg-white text-gray-700 cursor-pointer outline-none focus:ring-2"
+          style={{ borderColor: `${accentColor}60` } as React.CSSProperties}
+        >
+          {MONTHS.slice(fromIdx).map((m, i) => (
+            <option key={m.value} value={fromIdx + i}>
+              {m.label}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="flex items-center gap-1">
+        {quickFilters.map((q) => (
+          <button
+            key={q}
+            type="button"
+            data-ocid={`filter.${q.toLowerCase()}.button`}
+            onClick={() => applyQuick(q)}
+            className="text-[10px] font-semibold px-2.5 py-1 rounded-full border transition-all"
+            style={
+              activeQuick === q
+                ? {
+                    backgroundColor: accentColor,
+                    color: "#fff",
+                    borderColor: accentColor,
+                  }
+                : {
+                    backgroundColor: "#fff",
+                    color: accentColor,
+                    borderColor: `${accentColor}60`,
+                  }
+            }
+          >
+            {q === "All" ? "All" : q}
+          </button>
+        ))}
+      </div>
+      <div className="ml-auto">
+        <button
+          type="button"
+          data-ocid="filter.reset.button"
+          onClick={reset}
+          className="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 transition-all"
+        >
+          <RotateCcw size={10} />
+          Reset
+        </button>
+      </div>
+    </div>
+  );
+}
 
 // ── Canvas chart helpers for Excel export ────────────────────────────────────
 
-// ── Excel Export (xlsx CDN) ───────────────────────────────────────────────────
+// ── Excel Export (ExcelJS CDN) ────────────────────────────────────────────────
 
 declare global {
   interface Window {
-    XLSX: any;
+    ExcelJS: any;
   }
 }
 
-async function loadXLSX(): Promise<any> {
-  if (window.XLSX) return window.XLSX;
+async function loadExcelJS(): Promise<any> {
+  if (window.ExcelJS) return window.ExcelJS;
   return new Promise((resolve, reject) => {
     const script = document.createElement("script");
     script.src =
-      "https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js";
-    script.onload = () => resolve(window.XLSX);
+      "https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js";
+    script.onload = () => resolve(window.ExcelJS);
     script.onerror = reject;
     document.head.appendChild(script);
   });
 }
 
-async function exportDashboardToExcel() {
-  const XLSX = await loadXLSX();
-  const wb = XLSX.utils.book_new();
+type CellBorder = { style: "thin" | "medium" | "thick" };
+type FullBorder = {
+  top: CellBorder;
+  left: CellBorder;
+  bottom: CellBorder;
+  right: CellBorder;
+};
 
-  // Summary sheet
-  const summaryRows = [
-    ["Service", "Bookings", "Revenue (₹)", "Profit %", "Period"],
-    ["Train", 15541, 24218319, "10.4%", "Apr 2025 – Mar 2026"],
-    ["Flight", 8420, 187650000, "8%", "Apr 2025 – Mar 2026"],
-    ["Bus", 12380, 62145000, "6%", "Apr 2025 – Mar 2026"],
-    ["Hotel", 5840, 89320000, "12%", "Apr 2025 – Mar 2026"],
+const THIN_BORDER: FullBorder = {
+  top: { style: "thin" },
+  left: { style: "thin" },
+  bottom: { style: "thin" },
+  right: { style: "thin" },
+};
+
+function applyServiceSheet(
+  ws: any,
+  serviceLabel: string,
+  titleColor: string,
+  kpiLightBg: string,
+  kpis: { label: string; value: string | number }[],
+  monthly: { month: string; bookings: number; revenue: number }[],
+  table2: { header: string; rows: (string | number)[][] },
+  table3: { header: string; rows: (string | number)[][] },
+) {
+  // Column widths
+  ws.getColumn("A").width = 25;
+  ws.getColumn("B").width = 18;
+  ws.getColumn("C").width = 22;
+  ws.getColumn("D").width = 18;
+  ws.getColumn("E").width = 18;
+  ws.getColumn("F").width = 18;
+
+  // Row 1: Title
+  ws.mergeCells("A1:F1");
+  const titleCell = ws.getCell("A1");
+  titleCell.value = serviceLabel;
+  titleCell.font = { bold: true, size: 18, color: { argb: "FFFFFFFF" } };
+  titleCell.fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: titleColor },
+  };
+  titleCell.alignment = { horizontal: "center", vertical: "middle" };
+  ws.getRow(1).height = 42;
+
+  // Row 2: empty spacer
+  ws.getRow(2).height = 8;
+
+  // KPI cards rows 3-6
+  // kpiLightBg is passed in per-service
+  const kpiPositions = ["A3", "C3", "E3", "A5"];
+  const kpiMerges = ["A3:B4", "C3:D4", "E3:F4", "A5:B6"];
+  kpis.forEach((kpi, i) => {
+    ws.mergeCells(kpiMerges[i]);
+    const cell = ws.getCell(kpiPositions[i]);
+    cell.value = `${kpi.label}\n${kpi.value}`;
+    cell.font = { bold: true, size: 13, color: { argb: "FF1e1b4b" } };
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: kpiLightBg },
+    };
+    cell.alignment = {
+      horizontal: "center",
+      vertical: "middle",
+      wrapText: true,
+    };
+    cell.border = THIN_BORDER;
+    ws.getRow(i < 3 ? 3 : 5).height = 28;
+    ws.getRow(i < 3 ? 4 : 6).height = 28;
+  });
+
+  // Add Quarter Filter visual rows (rows 7-8)
+  ws.mergeCells("A7:B7");
+  const qfLabel = ws.getCell("A7");
+  qfLabel.value = "Filter by Quarter:";
+  qfLabel.font = { bold: true, size: 10, color: { argb: titleColor } };
+  qfLabel.fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: kpiLightBg },
+  };
+  qfLabel.alignment = { horizontal: "left", vertical: "middle" };
+  ws.getRow(7).height = 20;
+
+  const quarterLabels = [
+    "Q1: Apr–Jun",
+    "Q2: Jul–Sep",
+    "Q3: Oct–Dec",
+    "Q4: Jan–Mar",
+    "All Months",
   ];
-  const summaryWs = XLSX.utils.aoa_to_sheet(summaryRows);
-  XLSX.utils.book_append_sheet(wb, summaryWs, "Summary");
+  quarterLabels.forEach((ql, qi) => {
+    const cell = ws.getRow(7).getCell(3 + qi);
+    cell.value = ql;
+    cell.font = { bold: true, size: 9, color: { argb: titleColor } };
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: kpiLightBg },
+    };
+    cell.alignment = { horizontal: "center", vertical: "middle" };
+    cell.border = THIN_BORDER;
+  });
 
-  // Helper: monthly sheet
-  function addMonthlySheet(
-    name: string,
-    data: { month: string; bookings: number; revenue: number }[],
-  ) {
-    const rows = [
-      ["Month", "Bookings", "Revenue (₹)"],
-      ...data.map((d) => [formatMonthLabel(d.month), d.bookings, d.revenue]),
-    ];
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), name);
-  }
+  ws.mergeCells("A8:H8");
+  const qfNote = ws.getCell("A8");
+  qfNote.value =
+    "ℹ️  Use Excel AutoFilter dropdowns (▼) in the header rows below to filter data by month, bookings, or revenue";
+  qfNote.font = { italic: true, size: 9, color: { argb: "FF64748b" } };
+  qfNote.fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: "FFf8faff" },
+  };
+  qfNote.alignment = { horizontal: "left", vertical: "middle" };
+  ws.getRow(8).height = 18;
 
-  // Helper: simple sheet
-  function addSimpleSheet(
-    name: string,
+  let currentRow = 10;
+  let firstTableHeaderRow = -1;
+  let firstTableHeaderCols = 3;
+
+  function addTable(
+    sectionTitle: string,
     headers: string[],
-    data: (string | number)[][],
+    rows: (string | number)[][],
+    headerColor: string,
   ) {
-    XLSX.utils.book_append_sheet(
-      wb,
-      XLSX.utils.aoa_to_sheet([headers, ...data]),
-      name,
-    );
+    // Section header
+    ws.mergeCells(`A${currentRow}:F${currentRow}`);
+    const secCell = ws.getCell(`A${currentRow}`);
+    secCell.value = sectionTitle;
+    secCell.font = { bold: true, size: 12, color: { argb: "FFFFFFFF" } };
+    secCell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: headerColor },
+    };
+    secCell.alignment = { horizontal: "left", vertical: "middle" };
+    ws.getRow(currentRow).height = 24;
+    currentRow++;
+
+    // Column headers
+    const colHeaderRow = currentRow;
+    if (firstTableHeaderRow === -1) {
+      firstTableHeaderRow = colHeaderRow;
+      firstTableHeaderCols = headers.length;
+    }
+    const headerRow = ws.getRow(currentRow);
+    headers.forEach((h, ci) => {
+      const cell = headerRow.getCell(ci + 1);
+      cell.value = h;
+      cell.font = { bold: true, size: 11, color: { argb: "FFFFFFFF" } };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: titleColor },
+      };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+      cell.border = THIN_BORDER;
+    });
+    ws.getRow(currentRow).height = 22;
+    currentRow++;
+
+    // Data rows
+    rows.forEach((rowData, ri) => {
+      const dataRow = ws.getRow(currentRow);
+      const isAlt = ri % 2 === 1;
+      rowData.forEach((val, ci) => {
+        const cell = dataRow.getCell(ci + 1);
+        cell.value = val;
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: isAlt ? "FFf5f3ff" : "FFFFFFFF" },
+        };
+        cell.border = THIN_BORDER;
+        if (typeof val === "number" && ci === 2) {
+          cell.numFmt = "₹#,##0";
+        }
+        cell.alignment = { vertical: "middle" };
+      });
+      ws.getRow(currentRow).height = 20;
+      currentRow++;
+    });
+
+    currentRow += 2; // spacer
   }
 
-  addMonthlySheet("Train_Monthly", dashboardData.monthlyTrend);
-  addSimpleSheet(
-    "Train_Clients",
-    ["Client", "Bookings", "Revenue (₹)"],
-    dashboardData.topClients.map((c) => [c.name, c.bookings, c.revenue]),
-  );
-  addSimpleSheet(
-    "Train_Routes",
-    ["Route", "Count"],
-    dashboardData.topRoutes.map((r) => [r.route, r.count]),
+  addTable(
+    "📅 Monthly Trend",
+    ["Month", "Bookings", "Revenue (₹)"],
+    monthly.map((d) => [formatMonthLabel(d.month), d.bookings, d.revenue]),
+    titleColor,
   );
 
-  addMonthlySheet("Flight_Monthly", flightData.monthlyTrend);
-  addSimpleSheet(
-    "Flight_Airlines",
-    ["Airline", "Bookings"],
-    flightData.topAirlines.map((a) => [a.name, a.bookings]),
+  addTable(
+    table2.header,
+    table2.header.includes("Client")
+      ? ["Client", "Bookings", "Revenue (₹)"]
+      : ["Name", "Bookings"],
+    table2.rows,
+    titleColor,
   );
-  addSimpleSheet(
-    "Flight_Routes",
-    ["Route", "Count"],
-    flightData.topRoutes.map((r) => [r.route, r.count]),
-  );
-
-  addMonthlySheet("Bus_Monthly", busData.monthlyTrend);
-  addSimpleSheet(
-    "Bus_Operators",
-    ["Operator", "Bookings"],
-    busData.topOperators.map((o) => [o.name, o.bookings]),
-  );
-  addSimpleSheet(
-    "Bus_Routes",
-    ["Route", "Count"],
-    busData.topRoutes.map((r) => [r.route, r.count]),
+  addTable(
+    table3.header,
+    ["Route / Name", "Count / Bookings"],
+    table3.rows,
+    titleColor,
   );
 
-  addMonthlySheet("Hotel_Monthly", hotelData.monthlyTrend);
-  addSimpleSheet(
-    "Hotel_Cities",
-    ["City", "Bookings"],
-    hotelData.topCities.map((c) => [c.name, c.bookings]),
-  );
-  addSimpleSheet(
-    "Hotel_Hotels",
-    ["Hotel", "Bookings"],
-    hotelData.topHotels.map((h) => [h.route, h.count]),
+  // Set autoFilter on first table's header row
+  if (firstTableHeaderRow > 0) {
+    ws.autoFilter = {
+      from: { row: firstTableHeaderRow, column: 1 },
+      to: { row: currentRow - 1, column: firstTableHeaderCols },
+    };
+  }
+
+  // Freeze panes: freeze title + KPI + filter rows (first 9 rows)
+  ws.views = [{ state: "frozen", ySplit: 9 }];
+}
+
+async function exportDashboardToExcel() {
+  const ExcelJS = await loadExcelJS();
+  const wb = new ExcelJS.Workbook();
+  wb.creator = "Analytics Dashboard";
+  wb.created = new Date();
+
+  // ── Summary Sheet ─────────────────────────────────────────────────────────
+  const ws0 = wb.addWorksheet("Summary");
+  ws0.getColumn("A").width = 22;
+  ws0.getColumn("B").width = 16;
+  ws0.getColumn("C").width = 22;
+  ws0.getColumn("D").width = 14;
+  ws0.getColumn("E").width = 18;
+  ws0.getColumn("F").width = 20;
+
+  // Title
+  ws0.mergeCells("A1:F1");
+  const t = ws0.getCell("A1");
+  t.value = "📊 ANALYTICS DASHBOARD SUMMARY";
+  t.font = { bold: true, size: 20, color: { argb: "FFFFFFFF" } };
+  t.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1e1b4b" } };
+  t.alignment = { horizontal: "center", vertical: "middle" };
+  ws0.getRow(1).height = 48;
+
+  ws0.mergeCells("A2:F2");
+  const sub = ws0.getCell("A2");
+  sub.value = "FY 2025–2026  |  All Services Overview";
+  sub.font = { bold: false, size: 12, color: { argb: "FFc7d2fe" } };
+  sub.fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: "FF312e81" },
+  };
+  sub.alignment = { horizontal: "center", vertical: "middle" };
+  ws0.getRow(2).height = 28;
+
+  ws0.getRow(3).height = 10;
+
+  // Headers row 4
+  const hRow = ws0.getRow(4);
+  [
+    "Service",
+    "Bookings",
+    "Revenue (₹)",
+    "Profit %",
+    "Avg/Booking",
+    "Period",
+  ].forEach((h, i) => {
+    const c = hRow.getCell(i + 1);
+    c.value = h;
+    c.font = { bold: true, size: 11, color: { argb: "FFFFFFFF" } };
+    c.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FF4f46e5" },
+    };
+    c.alignment = { horizontal: "center", vertical: "middle" };
+    c.border = THIN_BORDER;
+  });
+  ws0.getRow(4).height = 24;
+
+  const services = [
+    {
+      name: "🚂 Train",
+      bookings: 15541,
+      revenue: 24218319,
+      profit: "10.4%",
+      avg: "₹1,558",
+      color: "FFe0e7ff",
+      nameColor: "FF4f46e5",
+    },
+    {
+      name: "✈️ Flight",
+      bookings: 8420,
+      revenue: 187650000,
+      profit: "8%",
+      avg: "₹22,286",
+      color: "FFe0f2fe",
+      nameColor: "FF0284c7",
+    },
+    {
+      name: "🚌 Bus",
+      bookings: 12380,
+      revenue: 62145000,
+      profit: "6%",
+      avg: "₹5,020",
+      color: "FFd1fae5",
+      nameColor: "FF059669",
+    },
+    {
+      name: "🏨 Hotel",
+      bookings: 5840,
+      revenue: 89320000,
+      profit: "12%",
+      avg: "₹15,295",
+      color: "FFfef3c7",
+      nameColor: "FFd97706",
+    },
+  ];
+
+  let totalBookings = 0;
+  let totalRevenue = 0;
+  services.forEach((s, i) => {
+    const row = ws0.getRow(5 + i);
+    const vals = [
+      s.name,
+      s.bookings,
+      s.revenue,
+      s.profit,
+      s.avg,
+      "Apr 2025 – Mar 2026",
+    ];
+    vals.forEach((v, ci) => {
+      const c = row.getCell(ci + 1);
+      c.value = v;
+      c.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: s.color },
+      };
+      c.border = THIN_BORDER;
+      if (ci === 0) {
+        c.font = { bold: true, color: { argb: s.nameColor } };
+      }
+      if (ci === 2 && typeof v === "number") c.numFmt = "₹#,##0";
+      c.alignment = { vertical: "middle" };
+    });
+    row.height = 22;
+    totalBookings += s.bookings;
+    totalRevenue += s.revenue;
+  });
+
+  // Total row
+  const totRow = ws0.getRow(9);
+  ["TOTAL", totalBookings, totalRevenue, "", "", ""].forEach((v, i) => {
+    const c = totRow.getCell(i + 1);
+    c.value = v;
+    c.font = { bold: true, size: 12, color: { argb: "FF1e1b4b" } };
+    c.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FFc7d2fe" },
+    };
+    c.border = THIN_BORDER;
+    if (i === 2 && typeof v === "number") c.numFmt = "₹#,##0";
+  });
+  totRow.height = 24;
+
+  // Service Breakdown section
+  ws0.getRow(11).height = 10;
+  ws0.mergeCells("A12:F12");
+  const brkTitle = ws0.getCell("A12");
+  brkTitle.value = "SERVICE BREAKDOWN — Share of Total";
+  brkTitle.font = { bold: true, size: 13, color: { argb: "FFFFFFFF" } };
+  brkTitle.fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: "FF1e1b4b" },
+  };
+  brkTitle.alignment = { horizontal: "center", vertical: "middle" };
+  ws0.getRow(12).height = 26;
+
+  const brkHRow = ws0.getRow(13);
+  [
+    "Service",
+    "Bookings",
+    "Bookings %",
+    "Revenue (₹)",
+    "Revenue %",
+    "Profit %",
+  ].forEach((h, i) => {
+    const c = brkHRow.getCell(i + 1);
+    c.value = h;
+    c.font = { bold: true, color: { argb: "FFFFFFFF" } };
+    c.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FF4f46e5" },
+    };
+    c.border = THIN_BORDER;
+    c.alignment = { horizontal: "center" };
+  });
+  ws0.getRow(13).height = 22;
+
+  services.forEach((s, i) => {
+    const row = ws0.getRow(14 + i);
+    const bPct = `${((s.bookings / totalBookings) * 100).toFixed(1)}%`;
+    const rPct = `${((s.revenue / totalRevenue) * 100).toFixed(1)}%`;
+    [s.name, s.bookings, bPct, s.revenue, rPct, s.profit].forEach((v, ci) => {
+      const c = row.getCell(ci + 1);
+      c.value = v;
+      c.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: i % 2 === 0 ? "FFf5f3ff" : "FFFFFFFF" },
+      };
+      c.border = THIN_BORDER;
+      if (ci === 3 && typeof v === "number") c.numFmt = "₹#,##0";
+      c.alignment = { vertical: "middle" };
+    });
+    row.height = 20;
+  });
+
+  // Add autoFilter and freeze on summary sheet
+  ws0.autoFilter = {
+    from: { row: 4, column: 1 },
+    to: { row: 8, column: 6 },
+  };
+  ws0.views = [{ state: "frozen", ySplit: 4 }];
+
+  // ── Service Sheets ────────────────────────────────────────────────────────
+  const ws1 = wb.addWorksheet("Train");
+  applyServiceSheet(
+    ws1,
+    "🚂 TRAIN BOOKING DASHBOARD",
+    "FF6366f1",
+    "FFe0e7ff",
+    [
+      { label: "Total Bookings", value: "15,541" },
+      { label: "Total Revenue", value: "₹2.42 Cr" },
+      { label: "Profit %", value: "10.4%" },
+      { label: "Avg/Booking", value: "₹1,558" },
+    ],
+    dashboardData.monthlyTrend,
+    {
+      header: "👥 Top Clients",
+      rows: dashboardData.topClients.map((c: any) => [
+        c.name,
+        c.bookings,
+        c.revenue,
+      ]),
+    },
+    {
+      header: "🗺️ Top Routes",
+      rows: dashboardData.topRoutes.map((r: any) => [r.route, r.count]),
+    },
   );
 
-  XLSX.writeFile(wb, "analytics-dashboard.xlsx");
+  const ws2 = wb.addWorksheet("Flight");
+  applyServiceSheet(
+    ws2,
+    "✈️ FLIGHT BOOKING DASHBOARD",
+    "FF0ea5e9",
+    "FFe0f2fe",
+    [
+      { label: "Total Bookings", value: "8,420" },
+      { label: "Total Revenue", value: "₹18.77 Cr" },
+      { label: "Profit %", value: "8%" },
+      { label: "Avg/Booking", value: "₹22,286" },
+    ],
+    flightData.monthlyTrend,
+    {
+      header: "✈️ Top Airlines",
+      rows: flightData.topAirlines.map((a: any) => [a.name, a.bookings]),
+    },
+    {
+      header: "🗺️ Top Routes",
+      rows: flightData.topRoutes.map((r: any) => [r.route, r.count]),
+    },
+  );
+
+  const ws3 = wb.addWorksheet("Bus");
+  applyServiceSheet(
+    ws3,
+    "🚌 BUS BOOKING DASHBOARD",
+    "FF10b981",
+    "FFd1fae5",
+    [
+      { label: "Total Bookings", value: "12,380" },
+      { label: "Total Revenue", value: "₹6.21 Cr" },
+      { label: "Profit %", value: "6%" },
+      { label: "Avg/Booking", value: "₹5,020" },
+    ],
+    busData.monthlyTrend,
+    {
+      header: "🚌 Top Operators",
+      rows: busData.topOperators.map((o: any) => [o.name, o.bookings]),
+    },
+    {
+      header: "🗺️ Top Routes",
+      rows: busData.topRoutes.map((r: any) => [r.route, r.count]),
+    },
+  );
+
+  const ws4 = wb.addWorksheet("Hotel");
+  applyServiceSheet(
+    ws4,
+    "🏨 HOTEL BOOKING DASHBOARD",
+    "FFf59e0b",
+    "FFfef3c7",
+    [
+      { label: "Total Bookings", value: "5,840" },
+      { label: "Total Revenue", value: "₹8.93 Cr" },
+      { label: "Profit %", value: "12%" },
+      { label: "Avg/Booking", value: "₹15,295" },
+    ],
+    hotelData.monthlyTrend,
+    {
+      header: "🏙️ Top Cities",
+      rows: hotelData.topCities.map((c: any) => [c.name, c.bookings]),
+    },
+    {
+      header: "🏨 Top Hotels",
+      rows: hotelData.topHotels.map((h: any) => [h.route, h.count]),
+    },
+  );
+
+  // Download
+  const buffer = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "analytics-dashboard.xlsx";
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ── UI Primitives ─────────────────────────────────────────────────────────────
@@ -218,29 +866,49 @@ function XlKpiCard({
   sub,
   icon,
   accentColor,
+  trend,
 }: {
   label: string;
   value: string;
   sub?: string;
   icon: React.ReactNode;
   accentColor: string;
+  trend?: string;
 }) {
+  // Build gradient from accent color
+  const hexToRgb = (hex: string) => {
+    const r = Number.parseInt(hex.slice(1, 3), 16);
+    const g = Number.parseInt(hex.slice(3, 5), 16);
+    const b = Number.parseInt(hex.slice(5, 7), 16);
+    return `${r},${g},${b}`;
+  };
+  const rgb = hexToRgb(accentColor.startsWith("#") ? accentColor : "#6366f1");
   return (
     <div
-      className="border border-[#d0d7de] bg-white hover:bg-[#f9fafb] transition-colors"
-      style={{ borderTop: `3px solid ${accentColor}` }}
+      className="rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all cursor-default"
+      style={{
+        background: `linear-gradient(135deg, ${accentColor} 0%, rgba(${rgb},0.75) 100%)`,
+      }}
     >
-      <div className="px-3 py-1.5 bg-[#f3f3f3] border-b border-[#d0d7de] flex items-center gap-1.5">
-        <span style={{ color: accentColor }}>{icon}</span>
-        <span className="text-[10px] font-bold text-[#595959] uppercase tracking-wide truncate">
-          {label}
-        </span>
-      </div>
-      <div className="px-3 py-3">
-        <p className="text-xl font-bold text-[#1f2937] leading-tight">
+      <div className="px-4 py-3 flex flex-col gap-1">
+        <div className="flex items-center justify-between">
+          <span className="text-white/80 text-[10px] font-bold uppercase tracking-widest truncate">
+            {label}
+          </span>
+          <span className="text-white/70">{icon}</span>
+        </div>
+        <p className="text-2xl font-extrabold text-white leading-tight tracking-tight">
           {value}
         </p>
-        {sub && <p className="text-[10px] text-[#595959] mt-0.5">{sub}</p>}
+        <div className="flex items-center gap-1.5 mt-0.5">
+          {sub && <p className="text-[10px] text-white/70">{sub}</p>}
+          {trend && (
+            <span className="flex items-center gap-0.5 text-[10px] font-semibold text-white/90 bg-white/20 rounded-full px-1.5 py-0.5">
+              <TrendingUp size={9} />
+              {trend}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -249,14 +917,23 @@ function XlKpiCard({
 function XlChartBox({
   title,
   children,
+  accentColor,
 }: {
   title: string;
   children: React.ReactNode;
+  accentColor?: string;
 }) {
   return (
-    <div className="border border-[#d0d7de] bg-white">
-      <div className="flex items-center px-3 py-2 bg-[#f3f3f3] border-b border-[#d0d7de]">
-        <span className="text-[11px] font-bold text-[#1f2937] uppercase tracking-wide">
+    <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+      <div
+        className="flex items-center px-4 py-2.5 border-b border-gray-100"
+        style={
+          accentColor
+            ? { borderLeft: `3px solid ${accentColor}`, paddingLeft: "12px" }
+            : {}
+        }
+      >
+        <span className="text-[12px] font-bold text-gray-700 tracking-wide">
           {title}
         </span>
       </div>
@@ -715,6 +1392,16 @@ export default function DashboardPage() {
 
 function OverviewSection({ activeService }: { activeService: ServiceType }) {
   const svc = SERVICE_CONFIG[activeService];
+  const {
+    fromIdx,
+    toIdx,
+    setFromIdx,
+    setToIdx,
+    activeQuick,
+    applyQuick,
+    reset,
+    filterTrend,
+  } = useMonthFilter();
 
   type KpiCard = {
     label: string;
@@ -883,10 +1570,11 @@ function OverviewSection({ activeService }: { activeService: ServiceType }) {
           : activeService === "bus"
             ? busData.monthlyTrend
             : hotelData.monthlyTrend;
-    return src.map((d) => ({
+    return filterTrend(src).map((d) => ({
       label: formatMonthLabel(d.month),
       bookings: d.bookings,
       revL: Math.round(d.revenue / 100000),
+      month: d.month,
     }));
   })();
 
@@ -974,10 +1662,22 @@ function OverviewSection({ activeService }: { activeService: ServiceType }) {
 
   return (
     <>
+      {/* Filter Bar */}
+      <FilterBar
+        accentColor={svc.accent}
+        fromIdx={fromIdx}
+        toIdx={toIdx}
+        setFromIdx={setFromIdx}
+        setToIdx={setToIdx}
+        activeQuick={activeQuick}
+        applyQuick={applyQuick}
+        reset={reset}
+      />
+
       {/* KPI Cards */}
       <section data-ocid="kpi.section">
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
-          {kpiCards[activeService].map((card) => (
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
+          {kpiCards[activeService].map((card, i) => (
             <XlKpiCard
               key={card.label}
               label={card.label}
@@ -985,6 +1685,7 @@ function OverviewSection({ activeService }: { activeService: ServiceType }) {
               sub={card.sub}
               icon={card.icon}
               accentColor={card.accent}
+              trend={i === 0 ? "+4.2%" : i === 1 ? "+8.2%" : undefined}
             />
           ))}
         </div>
@@ -992,38 +1693,66 @@ function OverviewSection({ activeService }: { activeService: ServiceType }) {
 
       {/* Monthly Trend */}
       <section data-ocid="trend.section">
-        <XlChartBox title="Monthly Booking & Revenue Trend">
-          <ResponsiveContainer width="100%" height={240}>
+        <XlChartBox
+          title="Monthly Booking & Revenue Trend"
+          accentColor={svc.accent}
+        >
+          <ResponsiveContainer width="100%" height={260}>
             <ComposedChart
               data={trendData}
-              margin={{ top: 4, right: 24, left: 0, bottom: 0 }}
+              margin={{ top: 10, right: 24, left: 0, bottom: 0 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#f3f3f3" />
+              <defs>
+                <linearGradient
+                  id={`revGrad-${activeService}`}
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="5%" stopColor={svc.accent} stopOpacity={0.35} />
+                  <stop
+                    offset="95%"
+                    stopColor={svc.accent}
+                    stopOpacity={0.02}
+                  />
+                </linearGradient>
+                <linearGradient id="bkgGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0.02} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#f0f0f0"
+                vertical={false}
+              />
               <XAxis
                 dataKey="label"
-                tick={{ fontSize: 10, fill: "#595959" }}
+                tick={{ fontSize: 10, fill: "#9ca3af" }}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
                 yAxisId="left"
-                tick={{ fontSize: 10, fill: "#595959" }}
+                tick={{ fontSize: 10, fill: "#9ca3af" }}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
                 yAxisId="right"
                 orientation="right"
-                tick={{ fontSize: 10, fill: "#595959" }}
+                tick={{ fontSize: 10, fill: "#9ca3af" }}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(v) => `₹${v}L`}
               />
               <Tooltip
                 contentStyle={{
-                  border: "1px solid #d0d7de",
+                  border: "1px solid #e5e7eb",
                   fontSize: 11,
-                  borderRadius: 0,
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                 }}
                 formatter={(v: number, n: string) =>
                   n === "Revenue (₹L)" ? [`₹${v}L`, n] : [v.toLocaleString(), n]
@@ -1035,19 +1764,18 @@ function OverviewSection({ activeService }: { activeService: ServiceType }) {
                 type="monotone"
                 dataKey="revL"
                 name="Revenue (₹L)"
-                fill={svc.trendFill}
-                stroke={svc.trendStroke}
-                strokeWidth={2}
-                fillOpacity={0.5}
+                fill={`url(#revGrad-${activeService})`}
+                stroke={svc.accent}
+                strokeWidth={2.5}
               />
-              <Line
+              <Area
                 yAxisId="left"
                 type="monotone"
                 dataKey="bookings"
                 name="Bookings"
+                fill="url(#bkgGrad)"
                 stroke="#10b981"
-                strokeWidth={2}
-                dot={{ r: 3 }}
+                strokeWidth={2.5}
               />
             </ComposedChart>
           </ResponsiveContainer>
@@ -1095,7 +1823,7 @@ function OverviewSection({ activeService }: { activeService: ServiceType }) {
           </ResponsiveContainer>
         </XlChartBox>
 
-        <XlChartBox title={distLabel[activeService]}>
+        <XlChartBox title={distLabel[activeService]} accentColor={svc.accent}>
           <div className="flex items-center justify-center">
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -1103,8 +1831,10 @@ function OverviewSection({ activeService }: { activeService: ServiceType }) {
                   data={distData[activeService]}
                   cx="50%"
                   cy="50%"
-                  outerRadius={80}
+                  innerRadius={55}
+                  outerRadius={85}
                   dataKey="value"
+                  paddingAngle={2}
                   label={({ name, percent }) =>
                     `${name.split(" ")[0]} ${(percent * 100).toFixed(0)}%`
                   }
@@ -1120,9 +1850,10 @@ function OverviewSection({ activeService }: { activeService: ServiceType }) {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    border: "1px solid #d0d7de",
+                    border: "1px solid #e5e7eb",
                     fontSize: 11,
-                    borderRadius: 0,
+                    borderRadius: "8px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                   }}
                   formatter={(v: number) => [v.toLocaleString(), "Bookings"]}
                 />
@@ -1133,25 +1864,58 @@ function OverviewSection({ activeService }: { activeService: ServiceType }) {
       </div>
 
       {/* Top routes */}
-      <XlChartBox title={routeLabel[activeService]}>
-        <XlTable
-          headers={["#", "Route / Location", "Bookings"]}
-          accentColor={svc.accent}
-          rows={routeData[activeService].map((r, i) => ({
-            key: r.route,
-            cells: [
-              i + 1,
-              r.route,
-              <span key="cnt" className="font-mono font-semibold">
-                {r.count.toLocaleString()}
-              </span>,
-            ],
-          }))}
-        />
+      <XlChartBox title={routeLabel[activeService]} accentColor={svc.accent}>
+        <ResponsiveContainer width="100%" height={220}>
+          <BarChart
+            data={routeData[activeService]}
+            layout="vertical"
+            margin={{ top: 4, right: 40, left: 0, bottom: 0 }}
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="#f0f0f0"
+              horizontal={false}
+            />
+            <XAxis
+              type="number"
+              tick={{ fontSize: 10, fill: "#9ca3af" }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <YAxis
+              type="category"
+              dataKey="route"
+              width={150}
+              tick={{ fontSize: 9, fill: "#6b7280" }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <Tooltip
+              contentStyle={{
+                border: "1px solid #e5e7eb",
+                fontSize: 11,
+                borderRadius: "8px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+              }}
+              formatter={(v: number) => [v.toLocaleString(), "Bookings"]}
+            />
+            <Bar dataKey="count" radius={[0, 6, 6, 0]}>
+              {routeData[activeService].map((entry, idx) => (
+                <Cell
+                  key={entry.route}
+                  fill={CHART_COLORS[idx % CHART_COLORS.length]}
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
       </XlChartBox>
 
       {/* All-services financial summary */}
-      <XlChartBox title="Financial Summary — All Services">
+      <XlChartBox
+        title="Financial Summary — All Services"
+        accentColor="#217346"
+      >
         <XlTable
           headers={["Service", "Revenue", "Cost", "Profit", "Profit %"]}
           accentColor="#217346"
@@ -1179,6 +1943,112 @@ function OverviewSection({ activeService }: { activeService: ServiceType }) {
           }))}
         />
       </XlChartBox>
+
+      {/* Service Comparison */}
+      <section data-ocid="service_comparison.section">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <XlChartBox
+            title="Service Comparison — Bookings"
+            accentColor="#6366f1"
+          >
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart
+                data={[
+                  { service: "Train", bookings: 15541, fill: "#6366f1" },
+                  { service: "Flight", bookings: 8420, fill: "#0ea5e9" },
+                  { service: "Bus", bookings: 12380, fill: "#10b981" },
+                  { service: "Hotel", bookings: 5840, fill: "#f59e0b" },
+                ]}
+                margin={{ top: 10, right: 24, left: 0, bottom: 0 }}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="#f0f0f0"
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey="service"
+                  tick={{ fontSize: 11, fill: "#6b7280" }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fontSize: 10, fill: "#9ca3af" }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <Tooltip
+                  contentStyle={{
+                    border: "1px solid #e5e7eb",
+                    fontSize: 11,
+                    borderRadius: "8px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  }}
+                  formatter={(v: number) => [v.toLocaleString(), "Bookings"]}
+                />
+                <Bar dataKey="bookings" radius={[6, 6, 0, 0]}>
+                  {[
+                    { svc: "train", fill: "#6366f1" },
+                    { svc: "flight", fill: "#0ea5e9" },
+                    { svc: "bus", fill: "#10b981" },
+                    { svc: "hotel", fill: "#f59e0b" },
+                  ].map((entry) => (
+                    <Cell key={entry.svc} fill={entry.fill} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </XlChartBox>
+
+          <XlChartBox
+            title="Revenue Distribution Across Services"
+            accentColor="#f59e0b"
+          >
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: "Train", value: 24218319 },
+                    { name: "Flight", value: 187650000 },
+                    { name: "Bus", value: 62145000 },
+                    { name: "Hotel", value: 89320000 },
+                  ]}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={55}
+                  outerRadius={85}
+                  dataKey="value"
+                  paddingAngle={3}
+                  label={({ name, percent }) =>
+                    `${name} ${(percent * 100).toFixed(0)}%`
+                  }
+                  labelLine={false}
+                  fontSize={10}
+                >
+                  {[
+                    { name: "train", color: "#6366f1" },
+                    { name: "flight", color: "#0ea5e9" },
+                    { name: "bus", color: "#10b981" },
+                    { name: "hotel", color: "#f59e0b" },
+                  ].map((entry) => (
+                    <Cell key={entry.name} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    border: "1px solid #e5e7eb",
+                    fontSize: 11,
+                    borderRadius: "8px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  }}
+                  formatter={(v: number) => [formatINR(v), "Revenue"]}
+                />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </XlChartBox>
+        </div>
+      </section>
     </>
   );
 }
@@ -1404,6 +2274,16 @@ function RoutesSection({ activeService }: { activeService: ServiceType }) {
 
 function FinanceSection({ activeService }: { activeService: ServiceType }) {
   const svc = SERVICE_CONFIG[activeService];
+  const {
+    fromIdx,
+    toIdx,
+    setFromIdx,
+    setToIdx,
+    activeQuick,
+    applyQuick,
+    reset,
+    filterTrend,
+  } = useMonthFilter();
 
   const financeData: Record<
     ServiceType,
@@ -1456,7 +2336,7 @@ function FinanceSection({ activeService }: { activeService: ServiceType }) {
           ? busData.monthlyTrend
           : hotelData.monthlyTrend;
 
-  const monthlyFinance = monthlySrc.map((d) => ({
+  const monthlyFinance = filterTrend(monthlySrc).map((d) => ({
     label: formatMonthLabel(d.month),
     revenue: Math.round(d.revenue / 100000),
     profit: Math.round((d.revenue * fd.profitPct) / 100 / 100000),
@@ -1480,8 +2360,19 @@ function FinanceSection({ activeService }: { activeService: ServiceType }) {
 
   return (
     <>
+      {/* Filter Bar */}
+      <FilterBar
+        accentColor={svc.accent}
+        fromIdx={fromIdx}
+        toIdx={toIdx}
+        setFromIdx={setFromIdx}
+        setToIdx={setToIdx}
+        activeQuick={activeQuick}
+        applyQuick={applyQuick}
+        reset={reset}
+      />
       {/* Finance KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <XlKpiCard
           label="Total Revenue"
           value={formatINR(fd.revenue)}
@@ -1513,53 +2404,81 @@ function FinanceSection({ activeService }: { activeService: ServiceType }) {
       </div>
 
       {/* Monthly Revenue & Profit */}
-      <XlChartBox title="Monthly Revenue & Profit (₹ Lakhs)">
-        <ResponsiveContainer width="100%" height={250}>
-          <BarChart
+      <XlChartBox
+        title="Monthly Revenue & Profit (₹ Lakhs)"
+        accentColor={svc.accent}
+      >
+        <ResponsiveContainer width="100%" height={260}>
+          <ComposedChart
             data={monthlyFinance}
-            margin={{ top: 4, right: 24, left: 0, bottom: 0 }}
+            margin={{ top: 10, right: 24, left: 0, bottom: 0 }}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke="#f3f3f3" />
+            <defs>
+              <linearGradient
+                id={`finRevGrad-${activeService}`}
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
+                <stop offset="5%" stopColor={svc.accent} stopOpacity={0.35} />
+                <stop offset="95%" stopColor={svc.accent} stopOpacity={0.02} />
+              </linearGradient>
+              <linearGradient id="finProfGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#10b981" stopOpacity={0.35} />
+                <stop offset="95%" stopColor="#10b981" stopOpacity={0.02} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="#f0f0f0"
+              vertical={false}
+            />
             <XAxis
               dataKey="label"
-              tick={{ fontSize: 10, fill: "#595959" }}
+              tick={{ fontSize: 10, fill: "#9ca3af" }}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
-              tick={{ fontSize: 10, fill: "#595959" }}
+              tick={{ fontSize: 10, fill: "#9ca3af" }}
               axisLine={false}
               tickLine={false}
               tickFormatter={(v) => `₹${v}L`}
             />
             <Tooltip
               contentStyle={{
-                border: "1px solid #d0d7de",
+                border: "1px solid #e5e7eb",
                 fontSize: 11,
-                borderRadius: 0,
+                borderRadius: "8px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
               }}
               formatter={(v: number, n: string) => [`₹${v}L`, n]}
             />
             <Legend wrapperStyle={{ fontSize: 11 }} />
-            <Bar
+            <Area
+              type="monotone"
               dataKey="revenue"
               name="Revenue (₹L)"
-              fill={svc.accent}
-              radius={[2, 2, 0, 0]}
+              fill={`url(#finRevGrad-${activeService})`}
+              stroke={svc.accent}
+              strokeWidth={2.5}
             />
-            <Bar
+            <Area
+              type="monotone"
               dataKey="profit"
               name="Profit (₹L)"
-              fill="#10b981"
-              radius={[2, 2, 0, 0]}
+              fill="url(#finProfGrad)"
+              stroke="#10b981"
+              strokeWidth={2.5}
             />
-          </BarChart>
+          </ComposedChart>
         </ResponsiveContainer>
       </XlChartBox>
 
       {/* Billing status */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        <XlChartBox title="Booking Status">
+        <XlChartBox title="Booking Status" accentColor={svc.accent}>
           <div className="flex items-center justify-center">
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -1567,7 +2486,9 @@ function FinanceSection({ activeService }: { activeService: ServiceType }) {
                   data={billStatus[activeService]}
                   cx="50%"
                   cy="50%"
-                  outerRadius={80}
+                  innerRadius={55}
+                  outerRadius={85}
+                  paddingAngle={3}
                   dataKey="value"
                   label={({ name, percent }) =>
                     `${name} ${(percent * 100).toFixed(0)}%`
@@ -1584,9 +2505,10 @@ function FinanceSection({ activeService }: { activeService: ServiceType }) {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    border: "1px solid #d0d7de",
+                    border: "1px solid #e5e7eb",
                     fontSize: 11,
-                    borderRadius: 0,
+                    borderRadius: "8px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                   }}
                   formatter={(v: number) => [v.toLocaleString(), "Count"]}
                 />
