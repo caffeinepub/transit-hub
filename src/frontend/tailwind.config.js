@@ -49,6 +49,10 @@ export default {
           DEFAULT: 'oklch(var(--card))',
           foreground: 'oklch(var(--card-foreground))'
         },
+        success: {
+          DEFAULT: 'oklch(var(--success) / <alpha-value>)',
+          foreground: 'oklch(var(--success-foreground))'
+        },
         chart: {
           1: 'oklch(var(--chart-1))',
           2: 'oklch(var(--chart-2))',
@@ -66,14 +70,16 @@ export default {
         '3xl': '2rem',
       },
       fontFamily: {
-        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        sans: ['DM Sans', 'system-ui', 'sans-serif'],
         display: ['Bricolage Grotesque', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        mono: ['Geist Mono', 'monospace'],
       },
       boxShadow: {
         xs: '0 1px 2px 0 rgba(0,0,0,0.05)',
-        soft: '0 4px 16px -4px rgba(99,102,241,0.10)',
+        soft: '0 2px 8px -2px rgba(0,0,0,0.06)',
         card: '0 2px 12px -4px rgba(0,0,0,0.08)',
+        elevated: '0 4px 16px -4px rgba(0,0,0,0.1)',
+        inner: 'inset 0 1px 2px 0 rgba(0,0,0,0.04)',
       },
       keyframes: {
         'accordion-down': {

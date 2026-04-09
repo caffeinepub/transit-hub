@@ -1,0 +1,213 @@
+type http_request_result = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type http_header = 
+ record {
+   name: text;
+   value: text;
+ };
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserProfile = record {name: text;};
+type TransformationOutput = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type TransformationInput = 
+ record {
+   context: blob;
+   response: http_request_result;
+ };
+type TransactionType = 
+ variant {
+   expense;
+   income;
+ };
+type Transaction = 
+ record {
+   amount: float64;
+   category: text;
+   createdAt: int;
+   date: text;
+   description: text;
+   id: text;
+   notes: text;
+   transactionType: TransactionType;
+   userId: principal;
+ };
+type StripeSessionStatus = 
+ variant {
+   completed: record {
+                response: text;
+                userPrincipal: opt text;
+              };
+   failed: record {error: text;};
+ };
+type StripeConfiguration = 
+ record {
+   allowedCountries: vec text;
+   secretKey: text;
+ };
+type ShoppingItem = 
+ record {
+   currency: text;
+   priceInCents: nat;
+   productDescription: text;
+   productName: text;
+   quantity: nat;
+ };
+type QrCheckResult = 
+ variant {
+   safe;
+   suspicious;
+   warning;
+ };
+type QrCheck = 
+ record {
+   amount: opt float64;
+   checkedAt: int;
+   id: text;
+   merchantName: text;
+   qrData: text;
+   reason: text;
+   result: QrCheckResult;
+   upiId: text;
+   userId: principal;
+ };
+type InvoiceItem = 
+ record {
+   amount: float64;
+   description: text;
+   quantity: float64;
+   rate: float64;
+ };
+type Invoice = 
+ record {
+   businessGst: text;
+   businessName: text;
+   createdAt: int;
+   customerAddress: text;
+   customerName: text;
+   date: text;
+   dueDate: text;
+   gstAmount: float64;
+   gstRate: float64;
+   id: text;
+   invoiceNumber: text;
+   items: vec InvoiceItem;
+   status: text;
+   subtotal: float64;
+   total: float64;
+   userId: principal;
+ };
+type BusinessProfile = 
+ record {
+   address: text;
+   businessName: text;
+   contactName: text;
+   email: text;
+   gstId: text;
+   phone: text;
+   planType: text;
+   userId: principal;
+ };
+type AlertType = 
+ variant {
+   custom;
+   lowBalance;
+   pendingInvoice;
+   unusualSpending;
+ };
+type AlertSettings = 
+ record {
+   lowBalanceThreshold: float64;
+   pendingInvoiceDays: nat;
+   unusualSpendingMultiplier: float64;
+ };
+type Alert = 
+ record {
+   alertType: AlertType;
+   createdAt: int;
+   id: text;
+   isRead: bool;
+   message: text;
+   userId: principal;
+ };
+service : {
+  _initializeAccessControl: () -> ();
+  addInvoice: (invoice: Invoice) -> (variant {
+                                       err: text;
+                                       ok: text;
+                                     });
+  addQrCheck: (check: QrCheck) -> (variant {
+                                     err: text;
+                                     ok: text;
+                                   });
+  addTransaction: (tx: Transaction) -> (variant {
+                                          err: text;
+                                          ok: text;
+                                        });
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  createCheckoutSession: (items: vec ShoppingItem, successUrl: text,
+   cancelUrl: text) -> (text);
+  deleteInvoice: (id: text) -> (variant {
+                                  err: text;
+                                  ok: text;
+                                });
+  deleteTransaction: (id: text) -> (variant {
+                                      err: text;
+                                      ok: text;
+                                    });
+  dismissAlert: (id: text) -> (variant {
+                                 err: text;
+                                 ok: text;
+                               });
+  getAlertSettings: () -> (opt AlertSettings) query;
+  getAlerts: () -> (vec Alert) query;
+  getBusinessProfile: () -> (opt BusinessProfile) query;
+  getCallerUserProfile: () -> (opt UserProfile) query;
+  getCallerUserRole: () -> (UserRole) query;
+  getInvoices: () -> (vec Invoice) query;
+  getQrChecks: () -> (vec QrCheck) query;
+  getStripeSessionStatus: (sessionId: text) -> (StripeSessionStatus);
+  getTransactions: () -> (vec Transaction) query;
+  getUserProfile: (user: principal) -> (opt UserProfile) query;
+  isCallerAdmin: () -> (bool) query;
+  isStripeConfigured: () -> (bool) query;
+  markAlertRead: (id: text) -> (variant {
+                                  err: text;
+                                  ok: text;
+                                });
+  saveAlertSettings: (settings: AlertSettings) ->
+   (variant {
+      err: text;
+      ok: text;
+    });
+  saveBusinessProfile: (profile: BusinessProfile) ->
+   (variant {
+      err: text;
+      ok: text;
+    });
+  saveCallerUserProfile: (profile: UserProfile) -> ();
+  setStripeConfiguration: (config: StripeConfiguration) -> ();
+  transform: (input: TransformationInput) -> (TransformationOutput) query;
+  updateInvoice: (id: text, invoice: Invoice) ->
+   (variant {
+      err: text;
+      ok: text;
+    });
+  updateTransaction: (id: text, tx: Transaction) ->
+   (variant {
+      err: text;
+      ok: text;
+    });
+}

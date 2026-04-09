@@ -1,0 +1,23 @@
+{
+  "overview": "BizControl is an all-in-one business management app for small businesses, freelancers, and shopkeepers. Track income and expenses, generate GST invoices, verify QR payments safely, view financial analytics, and receive smart alerts — all in one place.",
+  "features": [
+    "Expense & Income Tracker with categories and running balance",
+    "Invoice & GST Generator with PDF download",
+    "QR Payment Safety Checker using QR scan",
+    "Reports & Analytics with charts and date filters",
+    "Smart Alerts for low balance, unusual spending, and pending invoices",
+    "Freemium model with Stripe premium subscription (₹199/mo or ₹999/yr)"
+  ],
+  "category": "productivity",
+  "tags": [
+    "business",
+    "finance",
+    "invoice",
+    "gst",
+    "expense-tracker",
+    "analytics",
+    "qr-payment",
+    "freemium"
+  ],
+  "last_updated": "2026-04-09T09:33:06.573Z"
+}

@@ -10,6 +10,71 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface Alert {
+  'id' : string,
+  'alertType' : AlertType,
+  'userId' : Principal,
+  'createdAt' : bigint,
+  'isRead' : boolean,
+  'message' : string,
+}
+export interface AlertSettings {
+  'lowBalanceThreshold' : number,
+  'pendingInvoiceDays' : bigint,
+  'unusualSpendingMultiplier' : number,
+}
+export type AlertType = { 'lowBalance' : null } |
+  { 'custom' : null } |
+  { 'unusualSpending' : null } |
+  { 'pendingInvoice' : null };
+export interface BusinessProfile {
+  'contactName' : string,
+  'userId' : Principal,
+  'businessName' : string,
+  'email' : string,
+  'gstId' : string,
+  'address' : string,
+  'phone' : string,
+  'planType' : string,
+}
+export interface Invoice {
+  'id' : string,
+  'customerName' : string,
+  'status' : string,
+  'total' : number,
+  'businessGst' : string,
+  'userId' : Principal,
+  'date' : string,
+  'createdAt' : bigint,
+  'businessName' : string,
+  'dueDate' : string,
+  'gstAmount' : number,
+  'invoiceNumber' : string,
+  'customerAddress' : string,
+  'gstRate' : number,
+  'items' : Array<InvoiceItem>,
+  'subtotal' : number,
+}
+export interface InvoiceItem {
+  'rate' : number,
+  'description' : string,
+  'quantity' : number,
+  'amount' : number,
+}
+export interface QrCheck {
+  'id' : string,
+  'merchantName' : string,
+  'result' : QrCheckResult,
+  'userId' : Principal,
+  'upiId' : string,
+  'checkedAt' : bigint,
+  'amount' : [] | [number],
+  'reason' : string,
+  'qrData' : string,
+}
+export type QrCheckResult = { 'warning' : null } |
+  { 'safe' : null } |
+  { 'suspicious' : null };
 export interface ShoppingItem {
   'productName' : string,
   'currency' : string,
@@ -25,6 +90,19 @@ export type StripeSessionStatus = {
     'completed' : { 'userPrincipal' : [] | [string], 'response' : string }
   } |
   { 'failed' : { 'error' : string } };
+export interface Transaction {
+  'id' : string,
+  'transactionType' : TransactionType,
+  'userId' : Principal,
+  'date' : string,
+  'createdAt' : bigint,
+  'description' : string,
+  'notes' : string,
+  'category' : string,
+  'amount' : number,
+}
+export type TransactionType = { 'expense' : null } |
+  { 'income' : null };
 export interface TransformationInput {
   'context' : Uint8Array,
   'response' : http_request_result,
@@ -45,21 +123,74 @@ export interface http_request_result {
   'headers' : Array<http_header>,
 }
 export interface _SERVICE {
-  '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  '_initializeAccessControl' : ActorMethod<[], undefined>,
+  'addInvoice' : ActorMethod<[Invoice], { 'ok' : string } | { 'err' : string }>,
+  'addQrCheck' : ActorMethod<[QrCheck], { 'ok' : string } | { 'err' : string }>,
+  'addTransaction' : ActorMethod<
+    [Transaction],
+    { 'ok' : string } |
+      { 'err' : string }
+  >,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'createCheckoutSession' : ActorMethod<
     [Array<ShoppingItem>, string, string],
     string
   >,
+  'deleteInvoice' : ActorMethod<
+    [string],
+    { 'ok' : string } |
+      { 'err' : string }
+  >,
+  'deleteTransaction' : ActorMethod<
+    [string],
+    { 'ok' : string } |
+      { 'err' : string }
+  >,
+  'dismissAlert' : ActorMethod<
+    [string],
+    { 'ok' : string } |
+      { 'err' : string }
+  >,
+  'getAlertSettings' : ActorMethod<[], [] | [AlertSettings]>,
+  'getAlerts' : ActorMethod<[], Array<Alert>>,
+  'getBusinessProfile' : ActorMethod<[], [] | [BusinessProfile]>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getInvoices' : ActorMethod<[], Array<Invoice>>,
+  'getQrChecks' : ActorMethod<[], Array<QrCheck>>,
   'getStripeSessionStatus' : ActorMethod<[string], StripeSessionStatus>,
+  'getTransactions' : ActorMethod<[], Array<Transaction>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'isStripeConfigured' : ActorMethod<[], boolean>,
+  'markAlertRead' : ActorMethod<
+    [string],
+    { 'ok' : string } |
+      { 'err' : string }
+  >,
+  'saveAlertSettings' : ActorMethod<
+    [AlertSettings],
+    { 'ok' : string } |
+      { 'err' : string }
+  >,
+  'saveBusinessProfile' : ActorMethod<
+    [BusinessProfile],
+    { 'ok' : string } |
+      { 'err' : string }
+  >,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'setStripeConfiguration' : ActorMethod<[StripeConfiguration], undefined>,
   'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
+  'updateInvoice' : ActorMethod<
+    [string, Invoice],
+    { 'ok' : string } |
+      { 'err' : string }
+  >,
+  'updateTransaction' : ActorMethod<
+    [string, Transaction],
+    { 'ok' : string } |
+      { 'err' : string }
+  >,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

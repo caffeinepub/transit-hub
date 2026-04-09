@@ -1,0 +1,148 @@
+// Version: 1.0.0
+type AlertSettings__805730642 =
+  {
+    lowBalanceThreshold : Float;
+    pendingInvoiceDays : Nat;
+    unusualSpendingMultiplier : Float
+  };
+type AlertType__538905153 =
+  {#custom; #lowBalance; #pendingInvoice; #unusualSpending};
+type Alert__365804026 =
+  {
+    alertType : AlertType__538905153;
+    createdAt : Int;
+    id : Text;
+    isRead : Bool;
+    message : Text;
+    userId : Principal
+  };
+type BusinessProfile__999247773 =
+  {
+    address : Text;
+    businessName : Text;
+    contactName : Text;
+    email : Text;
+    gstId : Text;
+    phone : Text;
+    planType : Text;
+    userId : Principal
+  };
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type InvoiceItem__422835944 =
+  {amount : Float; description : Text; quantity : Float; rate : Float};
+type Invoice__772203955 =
+  {
+    businessGst : Text;
+    businessName : Text;
+    createdAt : Int;
+    customerAddress : Text;
+    customerName : Text;
+    date : Text;
+    dueDate : Text;
+    gstAmount : Float;
+    gstRate : Float;
+    id : Text;
+    invoiceNumber : Text;
+    items : [InvoiceItem__422835944];
+    status : Text;
+    subtotal : Float;
+    total : Float;
+    userId : Principal
+  };
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type List__415060402<T> = List__790383201<T>;
+type List__790383201<T> =
+  {
+    var blockIndex : Nat__490723111;
+    var blocks : [var [var ?T]];
+    var elementIndex : Nat__490723111
+  };
+type Map__158565046<K, V> = Map__297112838<K, V>;
+type Map__297112838<K, V> =
+  {var root : Node__46230540<K, V>; var size : Nat__490723111};
+type Map__605269027<K, V> = Map__158565046<K, V>;
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type QrCheckResult__29615209 = {#safe; #suspicious; #warning};
+type QrCheck__468254228 =
+  {
+    amount : ?Float;
+    checkedAt : Int;
+    id : Text;
+    merchantName : Text;
+    qrData : Text;
+    reason : Text;
+    result : QrCheckResult__29615209;
+    upiId : Text;
+    userId : Principal
+  };
+type StripeConfiguration__96897619 =
+  {allowedCountries : [Text]; secretKey : Text};
+type TransactionType__767491300 = {#expense; #income};
+type Transaction__865268250 =
+  {
+    amount : Float;
+    category : Text;
+    createdAt : Int;
+    date : Text;
+    description : Text;
+    id : Text;
+    notes : Text;
+    transactionType : TransactionType__767491300;
+    userId : Principal
+  };
+type UserProfile__491224006 = {name : Text};
+type UserRole__1054455867 = {#admin; #guest; #user};
+actor {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__1054455867>
+    };
+  stable alertSettings :
+    {
+      var root : Node__46230540<Principal, AlertSettings__805730642>;
+      var size : Nat__490723111
+    };
+  stable alerts :
+    {
+      var root : Node__46230540<Principal, List__415060402<Alert__365804026>>;
+      var size : Nat__490723111
+    };
+  stable businessProfiles :
+    {
+      var root : Node__46230540<Principal, BusinessProfile__999247773>;
+      var size : Nat__490723111
+    };
+  stable invoiceCounters :
+    {var root : Node__46230540<Principal, Nat>; var size : Nat__490723111};
+  stable invoices :
+    {
+      var root :
+        Node__46230540<Principal, List__415060402<Invoice__772203955>>;
+      var size : Nat__490723111
+    };
+  stable qrChecks :
+    {
+      var root :
+        Node__46230540<Principal, List__415060402<QrCheck__468254228>>;
+      var size : Nat__490723111
+    };
+  stable var stripeConfig : ?StripeConfiguration__96897619;
+  stable transactions :
+    {
+      var root :
+        Node__46230540<Principal, List__415060402<Transaction__865268250>>;
+      var size : Nat__490723111
+    };
+  stable userProfiles :
+    {
+      var root : Node__46230540<Principal, UserProfile__491224006>;
+      var size : Nat__490723111
+    }
+};

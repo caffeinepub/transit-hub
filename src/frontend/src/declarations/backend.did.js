@@ -8,6 +8,61 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const InvoiceItem = IDL.Record({
+  'rate' : IDL.Float64,
+  'description' : IDL.Text,
+  'quantity' : IDL.Float64,
+  'amount' : IDL.Float64,
+});
+export const Invoice = IDL.Record({
+  'id' : IDL.Text,
+  'customerName' : IDL.Text,
+  'status' : IDL.Text,
+  'total' : IDL.Float64,
+  'businessGst' : IDL.Text,
+  'userId' : IDL.Principal,
+  'date' : IDL.Text,
+  'createdAt' : IDL.Int,
+  'businessName' : IDL.Text,
+  'dueDate' : IDL.Text,
+  'gstAmount' : IDL.Float64,
+  'invoiceNumber' : IDL.Text,
+  'customerAddress' : IDL.Text,
+  'gstRate' : IDL.Float64,
+  'items' : IDL.Vec(InvoiceItem),
+  'subtotal' : IDL.Float64,
+});
+export const QrCheckResult = IDL.Variant({
+  'warning' : IDL.Null,
+  'safe' : IDL.Null,
+  'suspicious' : IDL.Null,
+});
+export const QrCheck = IDL.Record({
+  'id' : IDL.Text,
+  'merchantName' : IDL.Text,
+  'result' : QrCheckResult,
+  'userId' : IDL.Principal,
+  'upiId' : IDL.Text,
+  'checkedAt' : IDL.Int,
+  'amount' : IDL.Opt(IDL.Float64),
+  'reason' : IDL.Text,
+  'qrData' : IDL.Text,
+});
+export const TransactionType = IDL.Variant({
+  'expense' : IDL.Null,
+  'income' : IDL.Null,
+});
+export const Transaction = IDL.Record({
+  'id' : IDL.Text,
+  'transactionType' : TransactionType,
+  'userId' : IDL.Principal,
+  'date' : IDL.Text,
+  'createdAt' : IDL.Int,
+  'description' : IDL.Text,
+  'notes' : IDL.Text,
+  'category' : IDL.Text,
+  'amount' : IDL.Float64,
+});
 export const UserRole = IDL.Variant({
   'admin' : IDL.Null,
   'user' : IDL.Null,
@@ -19,6 +74,35 @@ export const ShoppingItem = IDL.Record({
   'quantity' : IDL.Nat,
   'priceInCents' : IDL.Nat,
   'productDescription' : IDL.Text,
+});
+export const AlertSettings = IDL.Record({
+  'lowBalanceThreshold' : IDL.Float64,
+  'pendingInvoiceDays' : IDL.Nat,
+  'unusualSpendingMultiplier' : IDL.Float64,
+});
+export const AlertType = IDL.Variant({
+  'lowBalance' : IDL.Null,
+  'custom' : IDL.Null,
+  'unusualSpending' : IDL.Null,
+  'pendingInvoice' : IDL.Null,
+});
+export const Alert = IDL.Record({
+  'id' : IDL.Text,
+  'alertType' : AlertType,
+  'userId' : IDL.Principal,
+  'createdAt' : IDL.Int,
+  'isRead' : IDL.Bool,
+  'message' : IDL.Text,
+});
+export const BusinessProfile = IDL.Record({
+  'contactName' : IDL.Text,
+  'userId' : IDL.Principal,
+  'businessName' : IDL.Text,
+  'email' : IDL.Text,
+  'gstId' : IDL.Text,
+  'address' : IDL.Text,
+  'phone' : IDL.Text,
+  'planType' : IDL.Text,
 });
 export const UserProfile = IDL.Record({ 'name' : IDL.Text });
 export const StripeSessionStatus = IDL.Variant({
@@ -52,16 +136,52 @@ export const TransformationOutput = IDL.Record({
 });
 
 export const idlService = IDL.Service({
-  '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+  '_initializeAccessControl' : IDL.Func([], [], []),
+  'addInvoice' : IDL.Func(
+      [Invoice],
+      [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+      [],
+    ),
+  'addQrCheck' : IDL.Func(
+      [QrCheck],
+      [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+      [],
+    ),
+  'addTransaction' : IDL.Func(
+      [Transaction],
+      [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+      [],
+    ),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'createCheckoutSession' : IDL.Func(
       [IDL.Vec(ShoppingItem), IDL.Text, IDL.Text],
       [IDL.Text],
       [],
     ),
+  'deleteInvoice' : IDL.Func(
+      [IDL.Text],
+      [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+      [],
+    ),
+  'deleteTransaction' : IDL.Func(
+      [IDL.Text],
+      [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+      [],
+    ),
+  'dismissAlert' : IDL.Func(
+      [IDL.Text],
+      [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+      [],
+    ),
+  'getAlertSettings' : IDL.Func([], [IDL.Opt(AlertSettings)], ['query']),
+  'getAlerts' : IDL.Func([], [IDL.Vec(Alert)], ['query']),
+  'getBusinessProfile' : IDL.Func([], [IDL.Opt(BusinessProfile)], ['query']),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getInvoices' : IDL.Func([], [IDL.Vec(Invoice)], ['query']),
+  'getQrChecks' : IDL.Func([], [IDL.Vec(QrCheck)], ['query']),
   'getStripeSessionStatus' : IDL.Func([IDL.Text], [StripeSessionStatus], []),
+  'getTransactions' : IDL.Func([], [IDL.Vec(Transaction)], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
@@ -69,6 +189,21 @@ export const idlService = IDL.Service({
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'isStripeConfigured' : IDL.Func([], [IDL.Bool], ['query']),
+  'markAlertRead' : IDL.Func(
+      [IDL.Text],
+      [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+      [],
+    ),
+  'saveAlertSettings' : IDL.Func(
+      [AlertSettings],
+      [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+      [],
+    ),
+  'saveBusinessProfile' : IDL.Func(
+      [BusinessProfile],
+      [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+      [],
+    ),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   'setStripeConfiguration' : IDL.Func([StripeConfiguration], [], []),
   'transform' : IDL.Func(
@@ -76,11 +211,76 @@ export const idlService = IDL.Service({
       [TransformationOutput],
       ['query'],
     ),
+  'updateInvoice' : IDL.Func(
+      [IDL.Text, Invoice],
+      [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+      [],
+    ),
+  'updateTransaction' : IDL.Func(
+      [IDL.Text, Transaction],
+      [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+      [],
+    ),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const InvoiceItem = IDL.Record({
+    'rate' : IDL.Float64,
+    'description' : IDL.Text,
+    'quantity' : IDL.Float64,
+    'amount' : IDL.Float64,
+  });
+  const Invoice = IDL.Record({
+    'id' : IDL.Text,
+    'customerName' : IDL.Text,
+    'status' : IDL.Text,
+    'total' : IDL.Float64,
+    'businessGst' : IDL.Text,
+    'userId' : IDL.Principal,
+    'date' : IDL.Text,
+    'createdAt' : IDL.Int,
+    'businessName' : IDL.Text,
+    'dueDate' : IDL.Text,
+    'gstAmount' : IDL.Float64,
+    'invoiceNumber' : IDL.Text,
+    'customerAddress' : IDL.Text,
+    'gstRate' : IDL.Float64,
+    'items' : IDL.Vec(InvoiceItem),
+    'subtotal' : IDL.Float64,
+  });
+  const QrCheckResult = IDL.Variant({
+    'warning' : IDL.Null,
+    'safe' : IDL.Null,
+    'suspicious' : IDL.Null,
+  });
+  const QrCheck = IDL.Record({
+    'id' : IDL.Text,
+    'merchantName' : IDL.Text,
+    'result' : QrCheckResult,
+    'userId' : IDL.Principal,
+    'upiId' : IDL.Text,
+    'checkedAt' : IDL.Int,
+    'amount' : IDL.Opt(IDL.Float64),
+    'reason' : IDL.Text,
+    'qrData' : IDL.Text,
+  });
+  const TransactionType = IDL.Variant({
+    'expense' : IDL.Null,
+    'income' : IDL.Null,
+  });
+  const Transaction = IDL.Record({
+    'id' : IDL.Text,
+    'transactionType' : TransactionType,
+    'userId' : IDL.Principal,
+    'date' : IDL.Text,
+    'createdAt' : IDL.Int,
+    'description' : IDL.Text,
+    'notes' : IDL.Text,
+    'category' : IDL.Text,
+    'amount' : IDL.Float64,
+  });
   const UserRole = IDL.Variant({
     'admin' : IDL.Null,
     'user' : IDL.Null,
@@ -92,6 +292,35 @@ export const idlFactory = ({ IDL }) => {
     'quantity' : IDL.Nat,
     'priceInCents' : IDL.Nat,
     'productDescription' : IDL.Text,
+  });
+  const AlertSettings = IDL.Record({
+    'lowBalanceThreshold' : IDL.Float64,
+    'pendingInvoiceDays' : IDL.Nat,
+    'unusualSpendingMultiplier' : IDL.Float64,
+  });
+  const AlertType = IDL.Variant({
+    'lowBalance' : IDL.Null,
+    'custom' : IDL.Null,
+    'unusualSpending' : IDL.Null,
+    'pendingInvoice' : IDL.Null,
+  });
+  const Alert = IDL.Record({
+    'id' : IDL.Text,
+    'alertType' : AlertType,
+    'userId' : IDL.Principal,
+    'createdAt' : IDL.Int,
+    'isRead' : IDL.Bool,
+    'message' : IDL.Text,
+  });
+  const BusinessProfile = IDL.Record({
+    'contactName' : IDL.Text,
+    'userId' : IDL.Principal,
+    'businessName' : IDL.Text,
+    'email' : IDL.Text,
+    'gstId' : IDL.Text,
+    'address' : IDL.Text,
+    'phone' : IDL.Text,
+    'planType' : IDL.Text,
   });
   const UserProfile = IDL.Record({ 'name' : IDL.Text });
   const StripeSessionStatus = IDL.Variant({
@@ -122,16 +351,52 @@ export const idlFactory = ({ IDL }) => {
   });
   
   return IDL.Service({
-    '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+    '_initializeAccessControl' : IDL.Func([], [], []),
+    'addInvoice' : IDL.Func(
+        [Invoice],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
+    'addQrCheck' : IDL.Func(
+        [QrCheck],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
+    'addTransaction' : IDL.Func(
+        [Transaction],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'createCheckoutSession' : IDL.Func(
         [IDL.Vec(ShoppingItem), IDL.Text, IDL.Text],
         [IDL.Text],
         [],
       ),
+    'deleteInvoice' : IDL.Func(
+        [IDL.Text],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
+    'deleteTransaction' : IDL.Func(
+        [IDL.Text],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
+    'dismissAlert' : IDL.Func(
+        [IDL.Text],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
+    'getAlertSettings' : IDL.Func([], [IDL.Opt(AlertSettings)], ['query']),
+    'getAlerts' : IDL.Func([], [IDL.Vec(Alert)], ['query']),
+    'getBusinessProfile' : IDL.Func([], [IDL.Opt(BusinessProfile)], ['query']),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getInvoices' : IDL.Func([], [IDL.Vec(Invoice)], ['query']),
+    'getQrChecks' : IDL.Func([], [IDL.Vec(QrCheck)], ['query']),
     'getStripeSessionStatus' : IDL.Func([IDL.Text], [StripeSessionStatus], []),
+    'getTransactions' : IDL.Func([], [IDL.Vec(Transaction)], ['query']),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],
@@ -139,12 +404,37 @@ export const idlFactory = ({ IDL }) => {
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'isStripeConfigured' : IDL.Func([], [IDL.Bool], ['query']),
+    'markAlertRead' : IDL.Func(
+        [IDL.Text],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
+    'saveAlertSettings' : IDL.Func(
+        [AlertSettings],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
+    'saveBusinessProfile' : IDL.Func(
+        [BusinessProfile],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
     'setStripeConfiguration' : IDL.Func([StripeConfiguration], [], []),
     'transform' : IDL.Func(
         [TransformationInput],
         [TransformationOutput],
         ['query'],
+      ),
+    'updateInvoice' : IDL.Func(
+        [IDL.Text, Invoice],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
+    'updateTransaction' : IDL.Func(
+        [IDL.Text, Transaction],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
       ),
   });
 };

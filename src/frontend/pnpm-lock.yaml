@@ -1,0 +1,38 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@caffeineai/qr-code':
+        specifier: ^0.1.0
+        version: 0.1.0
+
+packages:
+
+  '@caffeineai/camera@0.1.0':
+    resolution: {integrity: sha512-wZaZcRguHsBPY1GUkgcFEc/VfbSZclOjmYMmOj96lMjuZCSN4EI+2gJQat5xeAWHnxpX6GHSZrXcpkuRHkZ06g==}
+
+  '@caffeineai/qr-code@0.1.0':
+    resolution: {integrity: sha512-uaUKtiThWSekHBY2xsj1LK6iF8sdUeltiD41+0zzlZgKTYDKymVdn3vPuuoAxdsvYrt4XSKheb2w4ACY+93tfA==}
+
+  react@19.1.6:
+    resolution: {integrity: sha512-GVXa6S2mNw6QQg1KZRnX7fB/3F5sEy+7nsL8IrrlOLDxKXyfR97ZP3hNvWidFy1YkJlUvMYpeqUFxwY1ez6h3A==}
+    engines: {node: '>=0.10.0'}
+
+snapshots:
+
+  '@caffeineai/camera@0.1.0':
+    dependencies:
+      react: 19.1.6
+
+  '@caffeineai/qr-code@0.1.0':
+    dependencies:
+      '@caffeineai/camera': 0.1.0
+      react: 19.1.6
+
+  react@19.1.6: {}
